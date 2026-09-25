@@ -1,0 +1,31 @@
+name: Compatibility
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate skills and compatibility contracts
+        shell: pwsh
+        run: ./scripts/validate.ps1
+      - name: Parse Codex custom-agent TOML
+        run: python scripts/validate-codex-agents.py
+      - name: Test PowerShell installer
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./tests/test-install.ps1
+      - name: Test POSIX installers
+        if: runner.os == 'Linux'
+        shell: bash
+        run: ./tests/test-install-sh.sh
+      - name: Lint POSIX installers
+        if: runner.os == 'Linux'
+        shell: bash
+        run: shellcheck install.sh install-codex.sh tests/test-install-sh.sh
