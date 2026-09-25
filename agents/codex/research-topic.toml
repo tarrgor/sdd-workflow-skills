@@ -1,4 +1,4 @@
-# Managed by skillz-lattice; local edits to installed copies may be replaced.
+# Managed by sdd-workflow-skills; local edits to installed copies may be replaced.
 name = "research-topic"
 description = "Researches one bounded subtopic against external primary sources and returns fully sourced findings. Researches only; never writes project files."
 sandbox_mode = "read-only"

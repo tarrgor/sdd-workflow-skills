@@ -2,7 +2,7 @@
 
 ## Goal
 
-Make the skillz-lattice workflow usable from the Codex experience in the ChatGPT desktop app on native Windows, while retaining Claude Code and Unix support. The workflow must remain spec-driven, GitHub-backed, worktree-safe, and explicit about destructive or externally visible actions.
+Make the sdd-workflow-skills workflow usable from the Codex experience in the ChatGPT desktop app on native Windows, while retaining Claude Code and Unix support. The workflow must remain spec-driven, GitHub-backed, worktree-safe, and explicit about destructive or externally visible actions.
 
 The recommended approach is one canonical set of runtime-neutral skills plus thin host adapters. Forking every skill into Claude and Codex editions would make the workflow drift almost immediately.
 

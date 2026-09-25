@@ -1,4 +1,4 @@
-# Managed by skillz-lattice; local edits to installed copies may be replaced.
+# Managed by sdd-workflow-skills; local edits to installed copies may be replaced.
 name = "verify-implementation"
 description = "Independently reviews a finished issue implementation for acceptance criteria, correctness, security, and stale project knowledge. Reviews only; never fixes."
 sandbox_mode = "read-only"

@@ -17,7 +17,7 @@ $skillsSource = Join-Path $repoRoot 'skills'
 $codexAgentsSource = Join-Path $repoRoot 'agents\codex'
 $claudeAgentsSource = Join-Path $repoRoot 'agents'
 $installRoot = [System.IO.Path]::GetFullPath($DestinationRoot)
-$managedHeader = '# Managed by skillz-lattice; local edits to installed copies may be replaced.'
+$managedHeader = '# Managed by sdd-workflow-skills; local edits to installed copies may be replaced.'
 $script:linked = 0
 $script:copied = 0
 $script:removed = 0
@@ -130,7 +130,7 @@ function Install-ManagedFile {
             return
         }
         if ($firstLine -ne $managedHeader) {
-            Write-Warning "skip     $Destination is not managed by skillz-lattice; remove it yourself"
+            Write-Warning "skip     $Destination is not managed by sdd-workflow-skills; remove it yourself"
             $script:skipped++
             return
         }
@@ -220,7 +220,7 @@ function Remove-ManagedFile {
     $existing = Get-Item -LiteralPath $Destination -Force -ErrorAction SilentlyContinue
     if (-not $existing) { return }
     if ($existing.PSIsContainer -or (Get-Content -LiteralPath $Destination -TotalCount 1 -ErrorAction SilentlyContinue) -ne $managedHeader) {
-        Write-Warning "skip     $Destination is not a managed skillz-lattice file"
+        Write-Warning "skip     $Destination is not a managed sdd-workflow-skills file"
         $script:skipped++
         return
     }

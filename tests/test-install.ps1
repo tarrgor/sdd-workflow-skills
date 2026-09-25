@@ -3,7 +3,7 @@ param()
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-$testRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("skillz-lattice-test-" + [guid]::NewGuid().ToString('N'))
+$testRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("sdd-workflow-skills-test-" + [guid]::NewGuid().ToString('N'))
 
 function Assert-True([bool]$Condition, [string]$Message) {
     if (-not $Condition) { throw "Assertion failed: $Message" }

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Install skillz-lattice for Codex on macOS, Linux, or WSL.
+# Install sdd-workflow-skills for Codex on macOS, Linux, or WSL.
 # Usage: ./install-codex.sh [-f|--force] [-n|--dry-run] [-u|--uninstall]
 set -euo pipefail
 
@@ -82,7 +82,7 @@ remove_item() {
   skipped=$((skipped + 1))
 }
 
-MANAGED_HEADER="# Managed by skillz-lattice; local edits to installed copies may be replaced."
+MANAGED_HEADER="# Managed by sdd-workflow-skills; local edits to installed copies may be replaced."
 
 # Codex refuses symlinked agent role files (ELOOP), so agents are copied.
 is_managed_file() {
@@ -100,7 +100,7 @@ copy_item() {
       return
     fi
     if ! is_managed_file "$dest"; then
-      echo "skip     $dest is not managed by skillz-lattice; remove it yourself" >&2
+      echo "skip     $dest is not managed by sdd-workflow-skills; remove it yourself" >&2
       skipped=$((skipped + 1))
       return
     fi
@@ -119,7 +119,7 @@ remove_copy() {
     run rm "$dest"
     removed=$((removed + 1))
   elif [[ -e "$dest" || -L "$dest" ]]; then
-    echo "skip     $dest is not managed by skillz-lattice" >&2
+    echo "skip     $dest is not managed by sdd-workflow-skills" >&2
     skipped=$((skipped + 1))
   fi
 }

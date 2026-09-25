@@ -17,7 +17,7 @@ Record one completed run before release. Do not use a production repository for 
 
 - [ ] `./install.ps1 -DryRun` reports `%USERPROFILE%\.agents\skills` and `%USERPROFILE%\.codex\agents` without writing.
 - [ ] `./install.ps1` creates skill junctions and the two managed Codex agent files.
-- [ ] A new Codex task lists the skillz-lattice skills.
+- [ ] A new Codex task lists the sdd-workflow-skills skills.
 - [ ] Codex can select `verify-implementation` and `research-topic` as custom agents.
 - [ ] A repeated install reports existing junctions as `ok` and does not overwrite an unmanaged collision.
 

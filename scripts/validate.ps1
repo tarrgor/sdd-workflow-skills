@@ -99,7 +99,7 @@ foreach ($directory in Get-ChildItem -LiteralPath $skillRoot -Directory | Where-
 
 foreach ($agentFile in Get-ChildItem -LiteralPath (Join-Path $repoRoot 'agents/codex') -Filter '*.toml' -File) {
     $content = Get-Content -Raw -LiteralPath $agentFile.FullName
-    if (-not $content.StartsWith('# Managed by skillz-lattice;')) {
+    if (-not $content.StartsWith('# Managed by sdd-workflow-skills;')) {
         Add-ValidationError "Codex agent lacks managed header: $($agentFile.Name)"
     }
     foreach ($field in @('name', 'description', 'developer_instructions')) {

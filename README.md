@@ -1,10 +1,10 @@
-# skillz-lattice - An agentic coding workflow
+# sdd-workflow-skills - An agentic coding workflow
 
 A set of AI coding agent skills that implement a **spec-driven development** workflow: turn a rough idea into a confirmed spec, break it into issues, implement and review each one, and keep a running log of decisions and knowledge — all with you in the loop for every decision that matters. Supported hosts are [Claude Code](https://claude.com/claude-code) and Codex in the ChatGPT desktop app, CLI, or IDE.
 
 ## Try it yourself
 
-1. [Install](#install-for-claude-code-on-macos-or-linux) skillz-lattice.
+1. [Install](#install-for-claude-code-on-macos-or-linux) sdd-workflow-skills.
 2. Create an empty directory for your project and start an agent session in it.
 3. Run `/kick-off` and give it your project idea.
 
@@ -100,7 +100,7 @@ Use PowerShell from the repository root:
 .\install.ps1 -Target All             # Codex and Claude Code
 ```
 
-The installer creates directory junctions from `skills/<name>/` into `%USERPROFILE%\.agents\skills`, so skill edits remain live without requiring symbolic-link privileges. Codex custom-agent TOMLs are copied into `%USERPROFILE%\.codex\agents`; only files carrying the skillz-lattice managed header are updated or removed. Existing user files and real skill directories are never overwritten, including with `-Force`.
+The installer creates directory junctions from `skills/<name>/` into `%USERPROFILE%\.agents\skills`, so skill edits remain live without requiring symbolic-link privileges. Codex custom-agent TOMLs are copied into `%USERPROFILE%\.codex\agents`; only files carrying the sdd-workflow-skills managed header are updated or removed. Existing user files and real skill directories are never overwritten, including with `-Force`.
 
 `-Target Claude` additionally links skills into `%USERPROFILE%\.claude\skills` and Claude agent manifests into `%USERPROFILE%\.claude\agents`. Creating file symlinks requires Windows Developer Mode or an elevated PowerShell session. This PowerShell path is additive; the legacy `install.sh` contract remains the Claude baseline.
 
@@ -117,7 +117,7 @@ If PowerShell blocks the installer, inspect the current policy with `Get-Executi
 ./install-codex.sh --uninstall
 ```
 
-This links skills into `~/.agents/skills` and copies Codex custom agents into `~/.codex/agents` — Codex refuses symlinked agent files, so re-run the installer after pulling agent changes. Only files carrying the skillz-lattice managed header are updated or removed; symlinks left by earlier installs are replaced with copies. Under Windows, WSL2 uses its Linux home by default; it does not automatically share the native `%USERPROFILE%\.codex` configuration.
+This links skills into `~/.agents/skills` and copies Codex custom agents into `~/.codex/agents` — Codex refuses symlinked agent files, so re-run the installer after pulling agent changes. Only files carrying the sdd-workflow-skills managed header are updated or removed; symlinks left by earlier installs are replaced with copies. Under Windows, WSL2 uses its Linux home by default; it does not automatically share the native `%USERPROFILE%\.codex` configuration.
 
 ## Host compatibility
 
