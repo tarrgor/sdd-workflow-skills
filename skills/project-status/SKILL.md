@@ -1,11 +1,11 @@
 ---
 name: project-status
-description: This skill should be used to report where the project stands and recommend the single next workflow action. Trigger phrases include "project status", "where do we stand", "what's next", "what should I do next", or whenever the user wants an overview of milestone progress, open PRs, and pending findings. Read-only — reports and recommends, changes nothing.
+description: This skill should be used to report where the project stands and recommend the single next workflow action. Trigger phrases include "project status", "where do we stand", "what's next", "what should I do next", or whenever the user wants an overview of milestone progress, open PRs, and pending findings. Reports and recommends; its only write is `STATUS.html` at the project root.
 ---
 
 # Project Status
 
-Reports where the project stands and recommends exactly one next action. Read-only: no file writes, no `gh` mutations.
+Reports where the project stands and recommends exactly one next action. Read-only except for `STATUS.html` at the project root (§4) and its `.gitignore` line: no other file writes, no `gh` mutations.
 
 Milestone naming, the `Status:` lifecycle, and the `Depends on #N` format are defined in `../_shared/conventions.md` (relative to this skill's directory).
 
@@ -31,3 +31,28 @@ First match wins:
 4. An open issue whose `Depends on` blockers are all closed → `implement-issue #<n>` (lowest such number).
 5. A `Planned` spec with no issues yet → `create-spec-issues`.
 6. Milestone fully closed (or no active spec) → `kick-off` the next milestone; note if the GitHub milestone still needs closing (merge-pr's job).
+
+## 4. Write `STATUS.html`
+
+Render the report as `STATUS.html` at the project root (the git work-tree root, else the current directory) — overwritten every run, read by nothing. Never write the HTML by hand: build one JSON object and run `../_shared/scripts/status-page.py` (relative to this skill's directory), which fills `../_shared/status-template.html`:
+
+```
+python3 <script> <project-root> <report.json>
+```
+
+Write the JSON to a temp file outside the project (or pipe it on stdin with no file argument) — never inline in a command argument; titles are user-written. Python per `runtime-adapters.md`. Values are the report's own readings; omit keys with nothing to show.
+
+| Key | Holds |
+|---|---|
+| `generated` | today, `YYYY-MM-DD` |
+| `project` | `name`, `repo` (`owner/name`), `base` (base branch) |
+| `milestone` | active milestone `title`, `closed`, `total`; `null` if none |
+| `planned` | titles of `Planned` specs |
+| `next` | `action` (one line), `skill`, `command` (e.g. `/implement-issue 12`); `null` if nothing is outstanding |
+| `issues` | per milestone issue, by number: `number`, `title`, `state` — `closed`, `in-review` (open PR), `blocked` (open `Depends on` blocker), else `ready` — and `blocked_by` (open blocker numbers) |
+| `prs` | `number`, `title`, `branch`, `checks` (`passing`/`failing`/`pending`/`none`), `unresolved` (thread count) |
+| `findings` | `count`, `critical` (one line each) |
+| `last_meeting` | date of the newest meeting archive |
+| `flags` | the unusual things §2 flagged, one line each |
+
+Ensure the root `.gitignore` contains `STATUS.html` (append only if missing; create the file if absent) so the page never dirties the work tree. A failed write never blocks the recommendation: report the script's error in one line and continue. End with the page's path.
