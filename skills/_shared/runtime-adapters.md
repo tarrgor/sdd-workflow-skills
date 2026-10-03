@@ -28,6 +28,7 @@ Name the recommendation and let the user act on it. Never state or imply that a 
 - Prefer the host's file-search and file-editing tools over shell-specific pipelines.
 - Recursive file listing: use `rg --files` when available. PowerShell fallback: `Get-ChildItem -Recurse -File`. POSIX fallback: `find <path> -type f`.
 - Local ISO date: use runtime date context when available. PowerShell fallback: `Get-Date -Format yyyy-MM-dd`. POSIX fallback: `date +%F`.
+- Python 3 (for bundled scripts): `python3` on POSIX; `python` or `py -3` on Windows.
 - Create directories with the host-native operation. PowerShell: `New-Item -ItemType Directory -Force`. POSIX: `mkdir -p`.
 - Treat repository-relative paths as platform-neutral. Quote native filesystem paths, especially when they contain spaces.
 - For multiline GitHub issue or PR bodies, prefer a temporary body file and `gh ... --body-file <path>` over shell-dependent quoting.
