@@ -30,7 +30,8 @@ First match wins:
 3. An open PR that is clean → `merge-pr` for that PR.
 4. An open issue whose `Depends on` blockers are all closed → `implement-issue #<n>` (lowest such number).
 5. A `Planned` spec with no issues yet → `create-spec-issues`.
-6. Milestone fully closed (or no active spec) → `kick-off` the next milestone; note if the GitHub milestone still needs closing (merge-pr's job).
+6. All milestone issues closed but the milestone still open (on GitHub or spec not `Done`) → `project-meeting`, to decide with the user whether to close it.
+7. Milestone closed (or no active spec) → `kick-off` the next milestone.
 
 ## 4. Write `STATUS.html`
 
