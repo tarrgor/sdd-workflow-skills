@@ -35,9 +35,9 @@ foreach ($entry in $legacyHashes.GetEnumerator()) {
 }
 
 $claudeSkillContracts = @{
-    'skills/implement-issue/SKILL.md' = @('subagent_type: verify-implementation', 'run_in_background: false')
-    'skills/verify-implementation/SKILL.md' = @('subagent_type: verify-implementation', 'run_in_background: false')
-    'skills/research-topic/SKILL.md' = @('subagent_type: research-topic', 'run_in_background: false')
+    'skills/implement-issue/SKILL.md' = @('subagent_type: verify-implementation')
+    'skills/verify-implementation/SKILL.md' = @('subagent_type: verify-implementation')
+    'skills/research-topic/SKILL.md' = @('subagent_type: research-topic')
     'skills/kick-off/SKILL.md' = @('root `AGENTS.md` containing just `Read CLAUDE.md.`')
     'skills/create-obsidian-vault/SKILL.md' = @('disable-model-invocation: true', 'run it with `/create-obsidian-vault`')
 }

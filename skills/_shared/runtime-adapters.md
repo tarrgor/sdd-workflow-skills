@@ -4,19 +4,21 @@ Use the current host's native capabilities. These mappings change invocation and
 
 ## Subagents
 
-- **Claude Code:** use the existing `Agent` tool with the requested `subagent_type` and wait synchronously, exactly as the calling skill specifies.
+- **Claude Code:** use the `Agent` tool with the requested `subagent_type`. Subagents run in the background and notify the caller when they finish; wait for that result before any step that depends on it, exactly as the calling skill specifies.
 - **Codex:** spawn the matching custom agent with the collaboration/subagent capability, explicitly tell it to use the corresponding `$verify-implementation` or `$research-topic` skill, pass the complete brief, and wait for its final result before continuing. The Codex custom agents are named `verify-implementation` and `research-topic` — the same names Claude Code uses; their source files live in `agents/codex/`.
 - If the named agent is unavailable, follow the fallback in the calling skill. Never claim independent review or isolated context when the work ran in the caller.
 
 ## Model selection
 
-A skill may recommend a model per complexity tier; it can never set one. Neither host lets a running session switch its own model — the session model is the user's choice (`/model`, or the host's model picker). Only subagent invocations carry a model of their own, and this workflow does not implement issues in subagents.
+A skill may recommend a model per complexity tier; it never changes the model of the session it runs in — that stays the user's choice (`/model`, or the host's model picker). A model can be set only on work a skill starts itself (a subagent, or a new session where the host can start one), and this workflow does not implement issues in subagents.
+
+The table names model families, not versions: use the newest release of the named family that the host offers.
 
 | Tier | Claude Code | Codex |
 |---|---|---|
 | Low | Sonnet | Terra |
-| Medium | Opus 5 | Sol |
-| High | Opus 5 | Sol |
+| Medium | Opus | Sol |
+| High | Opus | Sol |
 | Exceptional | Fable | Astra |
 
 Astra and Fable are reserved for genuinely exceptional work; Sol carries ordinary coding issues up to and including the High tier. If the host offers a reasoning-effort setting, raise it with the tier rather than reaching for a larger model.
