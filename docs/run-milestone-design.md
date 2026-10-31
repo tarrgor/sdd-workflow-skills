@@ -83,7 +83,7 @@ The conventions rule "this workflow does not implement issues in subagents" stay
 
 ### D8 — Failure handling
 
-**Decided: retry a failed unit of work once, fresh; on a second failure, park the issue** with a finding describing both attempts. A failure is anything that ends without a PR, or with a PR whose build/tests fail after the session's own fixes.
+**Decided: retry a failed unit of work once, fresh; on a second failure, park the issue** with a finding describing both attempts. A failure is `RESULT: failed`: anything that ends without a usable PR, including one whose build/tests fail after the session's own fixes. `skipped` and `parked` are not failures and are never retried.
 
 ### D9 — Review loop after fixes
 
@@ -104,14 +104,15 @@ The answers to D1, D2, D4 and D6 are durable authorisation, not per-run argument
 
 ## Prerequisite A — non-interactive mode
 
-`implement-issue` and `check-pr-comments` gain a mode, set by the brief the coordinator passes, in which they never wait for the user:
+`implement-issue` and `check-pr-comments` gain a mode, set by `mode: non-interactive` in the brief the coordinator passes, in which they never wait for the user. The rules and the result line are defined once, in `conventions.md` § Non-interactive mode:
 
 | Today | Non-interactive |
 |---|---|
-| Ambiguity blocks a correct implementation → comment on the issue, wait | D7: finding + `needs-decision` label, stop without a branch |
+| Ambiguity blocks a correct implementation → comment on the issue, wait | Park (D7): `needs-decision` label; the finding goes on the issue branch, or — before a branch exists — into the final message for the coordinator to file |
+| Precondition not met (open blocker, existing PR) → tell the user | Stop without changes: `RESULT: skipped` |
 | Unsafe repository state → ask | Stop and report; the coordinator parks the issue |
 | Review findings disputed → "user reviews, then `check-pr-comments`" | Disputed findings go to `findings-<slug>.md`; PR stays open, not merge-eligible under D1 |
-| Ends by suggesting the next skill | Ends with a machine-readable result line the coordinator parses: `RESULT: pr=<n> unresolved=<highest severity left open, or none> \| parked \| failed`, plus the reason |
+| Ends by suggesting the next skill | Commits and pushes anything still uncommitted, then ends with one result line: `RESULT: pr=<n> unresolved=<critical\|high\|none>`, `RESULT: parked`, `RESULT: skipped` or `RESULT: failed`, each with a reason |
 
 Interactive behaviour stays the default and, apart from the D9 review loop, unchanged.
 
@@ -138,6 +139,6 @@ Observed behaviour of the session tooling, to be confirmed while building:
 
 1. Settle D1–D9 (this document).
 2. Prerequisite A (with the D9 review loop) and Prerequisite B — independent of each other, can run in parallel.
-3. `run-milestone` skill, plus the `estimate-issue` caller change (D6), and the unit-of-work adapter (D5) in `runtime-adapters.md`.
+3. `run-milestone` skill, plus the caller changes in the descriptions of `estimate-issue` (D6) and `check-pr-comments` (both say user-invoked only), and the unit-of-work adapter (D5) in `runtime-adapters.md`.
 4. README (workflow diagram, host table), validator contracts for the new skill.
 5. A trial run on a small real milestone with one session at a time, before raising parallelism to D2's default.

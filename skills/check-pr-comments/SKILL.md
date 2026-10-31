@@ -5,7 +5,7 @@ description: This skill should be used to triage and address review feedback on 
 
 # Check PR Comments
 
-Addresses review feedback on an issue that's already implemented — does not re-implement or create a new branch/PR.
+Addresses review feedback on an issue that's already implemented — does not re-implement or create a new branch/PR. When the brief says `mode: non-interactive`, apply the non-interactive rules from the conventions wherever this skill would stop for the user.
 
 Branch/slug format, the Knowledge discipline, written-deliverable sizing, and the delegation rule are defined in `../_shared/conventions.md` (relative to this skill's directory).
 
@@ -29,7 +29,8 @@ Branch/slug format, the Knowledge discipline, written-deliverable sizing, and th
 
 ## 4. Publish and report
 
-- Commit and push the fixes to the existing branch.
-- Reply to each addressed comment confirming the fix.
 - A Knowledge entry whose claim your work disproved: correct it in place per the conventions governance rule, and note the correction in the report. Anything else needing the project owner's attention (including a contradiction you couldn't settle): write `.project/Inbox/findings-<slug>.md`. Anything worth keeping for future implementations: add a new entry to `.project/Knowledge/<topic>/`.
 - Update `.project/Reports/<slug>.md` with the new verification results.
+- Commit and push the fixes, together with those `.project/` files, to the existing branch.
+- Reply to each addressed comment confirming the fix.
+- Non-interactive: end with the result line from the conventions; feedback left unaddressed that reports a bug or a security problem counts as `unresolved=high`.

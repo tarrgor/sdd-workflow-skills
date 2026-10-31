@@ -5,7 +5,7 @@ description: This skill should be used to implement a single GitHub issue from a
 
 # Implement Issue
 
-Follow this workflow end to end. Keep the user informed at important transitions, but continue autonomously unless a blocking question or unsafe repository state requires their input.
+Follow this workflow end to end. Keep the user informed at important transitions, but continue autonomously unless a blocking question or unsafe repository state requires their input. When the brief says `mode: non-interactive`, apply the non-interactive rules from the conventions wherever this skill would stop for the user, and end with their result line.
 
 Branch/slug format, base-branch rule, `Depends on #N` format, the Knowledge discipline, written-deliverable sizing, and the delegation rule are defined in `../_shared/conventions.md` (relative to this skill's directory).
 
@@ -36,7 +36,7 @@ Read `../_shared/runtime-adapters.md` before branch setup or subagent invocation
 - If the issue touches UI, styling, or any brand-facing output, also read `.project/Branding/BRAND.md` and `.project/Branding/Assets/`, if present, and implement against them (palette, typography, voice, logo/asset usage) — don't invent brand decisions the guide already made.
 - Consult `.project/Knowledge/`, if present, per the conventions discipline: read only name-relevant entries; what you read is binding unless a checkable claim is contradicted by your own investigation — then trust what you observe and correct the entry in Step 6.
 - Restate the acceptance criteria internally; do not implement from the title alone.
-- If something genuinely blocks a correct implementation (not resolvable from the codebase or convention), post one concise comment on the issue explaining the ambiguity, then stop and wait. Resume once answered.
+- If something genuinely blocks a correct implementation (not resolvable from the codebase or convention), post one concise comment on the issue explaining the ambiguity, then stop and wait. Resume once answered. Non-interactive: park instead.
 
 ## 4. Create the branch
 
@@ -84,15 +84,18 @@ Skip this step and Step 10 for a code-free change (Step 5) and go straight to St
 
 This is the filter stage: the review reports for coverage, so expect low-severity and low-confidence findings among the real ones. Filtering here is the point — do not act on everything returned.
 
-- Findings returned: judge each one against the issue's acceptance criteria — valid and actionable, or not. Rank by the reported severity and confidence. For anything not actionable, note why in one line instead of acting on it.
+- Findings returned: judge each one against the issue's acceptance criteria — valid and actionable, or not. Rank by the reported severity and confidence. For anything not actionable, note why in one line instead of acting on it. Never dismiss a high or critical finding on your own judgment: fix it, or leave it open for Step 11.
 - For each valid finding, make the fix, then re-run the project's build/test commands; fix failures before proceeding.
 - Stale knowledge findings aren't code fixes: confirm the reviewer's claim against the code yourself, then correct the entry in place as in Step 6. If you can't confirm it, or the right value is ambiguous, add it to this issue's `.project/Inbox/findings-<slug>.md` instead.
 - Commit and push the fixes to the existing branch.
-- No findings: say so; do not re-run the review.
+- **Re-review** when this round fixed a high or critical finding: return to Step 9 for a fresh review, telling the reviewer which high or critical findings the previous round raised so it confirms they are gone. At most two fix rounds (three reviews). If a review reports the approach itself as wrong, end the loop — that is the user's decision (Step 11).
+- Otherwise — no findings, or only low or medium ones — say so; do not re-run the review.
 
 ## 11. Suggest the next step
 
-End by naming the next step: all findings addressed, none returned, or the review skipped as code-free → suggest `merge-pr`; anything unresolved or disputed → suggest the user review it and run `check-pr-comments` afterwards.
+End by naming the next step: all findings addressed, none returned, or the review skipped as code-free → suggest `merge-pr`; anything unresolved or disputed, or an approach the reviewer reports as wrong → suggest the user review it and run `check-pr-comments` afterwards.
+
+Non-interactive: write every high or critical finding still open after the last round, and a reported wrong approach, to `.project/Inbox/findings-<slug>.md`, then commit and push; a wrong approach also parks the issue. The result line reports the last review's verdict, not your own assessment.
 
 ## Failure handling
 
