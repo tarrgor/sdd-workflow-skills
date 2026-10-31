@@ -42,7 +42,7 @@ Confirm the merge and remote branch deletion. For a normal branch, also confirm 
 
 ## 6. Check the Inbox and suggest the next step
 
-- List `.project/Inbox/findings-*.md` (skip if the folder is absent or empty).
-- Recommend the user run a project meeting (`project-meeting`) if either holds: any finding is critical — needs immediate attention (e.g. security risk, data loss, broken build, blocker for other work) — or there are three or more findings pending.
-- Keep it to a brief hint at the end of the report; name the critical finding(s) or the count. Do not open, triage, or act on the findings here — that is the project meeting's job.
-- Otherwise, name the next open issue in the milestone whose `Depends on #<number>` blockers are all closed (lowest number) and suggest `implement-issue` for it. If that was the milestone's last open issue, suggest `project-meeting` to decide on closing it.
+Use the rules in `../_shared/next-action.md` (relative to this skill's directory), counting the just-merged PR and its issue as closed.
+
+- Meeting due → recommend `project-meeting`, naming the critical finding(s) or the count. Keep it to a brief hint at the end of the report; do not open, triage, or act on the findings — that is the project meeting's job.
+- Otherwise suggest the first match of its next-action order.

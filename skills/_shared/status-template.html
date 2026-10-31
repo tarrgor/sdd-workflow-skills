@@ -15,7 +15,7 @@
   --bg: #f7f8fa; --surface: #ffffff; --ink: #1b1f24; --muted: #646b75; --line: #e1e4e8;
   --accent: #2f5f9e;
   --done: #3f7d4e; --active: #c08a1e; --todo: #b4b9c0; --attention: #b3402f;
-  --closed: #9cc3a4; --review: #e6b866; --ready: #a9c4e8; --blocked: #f0b8ad;
+  --closed: #9cc3a4; --review: #e6b866; --ready: #a9c4e8; --blocked: #f0b8ad; --parked: #d7c4ea;
   --on-dark: #ffffff;
 }
 @media (prefers-color-scheme: dark) {
@@ -23,7 +23,7 @@
     --bg: #15171a; --surface: #1f2226; --ink: #e6e8eb; --muted: #9aa1ab; --line: #33373d;
     --accent: #79a8e8;
     --done: #5fa36f; --active: #d9a441; --todo: #50555c; --attention: #d9614c;
-    --closed: #3d6447; --review: #8a6a2c; --ready: #2f4b70; --blocked: #6e3329;
+    --closed: #3d6447; --review: #8a6a2c; --ready: #2f4b70; --blocked: #6e3329; --parked: #4f3a6b;
   }
 }
 * { box-sizing: border-box; }
@@ -60,6 +60,7 @@ h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: v
 .in-review { background: var(--review); }
 .ready { background: var(--ready); }
 .blocked { background: var(--blocked); }
+.parked { background: var(--parked); }
 .open { background: var(--surface); }
 .legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--muted); margin-top: 10px; }
 .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -2px;
@@ -172,7 +173,7 @@ footer { margin-top: 36px; font-size: 12px; color: var(--muted); }
         (blockers.length ? " — waits on " + blockers.map(function (n) { return "#" + n; }).join(", ") : ""));
     });
     var legend = add(page, "div", "legend");
-    [["closed", "Closed"], ["in-review", "In review (open PR)"], ["ready", "Ready"], ["blocked", "Blocked"]]
+    [["closed", "Closed"], ["in-review", "In review (open PR)"], ["ready", "Ready"], ["blocked", "Blocked"], ["parked", "Parked (needs decision)"]]
       .forEach(function (x) { var l = add(legend, "span"); add(l, "i", x[0]); l.appendChild(document.createTextNode(x[1])); });
   }
 

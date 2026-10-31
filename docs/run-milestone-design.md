@@ -118,13 +118,14 @@ Interactive behaviour stays the default and, apart from the D9 review loop, unch
 
 ## Prerequisite B — one shared next-action rule
 
-Move into `skills/_shared/next-action.md`:
+`skills/_shared/next-action.md` holds what `project-status`, `merge-pr` and `run-milestone` decide on:
 
-- the "first match wins" list from `project-status` §3,
-- the meeting-due test from `merge-pr` §6 (extended per D4),
-- the "ready issue" definition (open, all `Depends on` blockers closed, not labelled `needs-decision`).
+- the issue states — parked (`needs-decision`), blocked, in review, ready;
+- pending findings — the base branch's Inbox plus the Inbox files each open `issue/*` PR adds or changes (D4);
+- the meeting-due test;
+- the "first match wins" next-action order, with one new rule: no ready issue but a parked one → `project-meeting`.
 
-`project-status`, `merge-pr` and `run-milestone` all read it. Same change: `project-status` shows parked issues as their own state.
+`project-status` shows parked issues as their own state on `STATUS.html`.
 
 ## Host constraints (Claude Code desktop)
 
