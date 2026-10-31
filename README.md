@@ -32,6 +32,7 @@ project-meeting  ◄────────────  merge-pr  ◄───
         └──────────── new issues, spec changes ◄────── (feedback → fixes)
 
 project-status — run anytime: where does the project stand, what's the next action?
+run-milestone  — runs implement → verify → merge for every ready issue, unattended, until a meeting is due
 ```
 
 Each skill ends by naming the next step, so you always know what to run next. For an existing project that doesn't follow this workflow yet, **migrate-project** is the entry point instead of kick-off.
@@ -48,8 +49,9 @@ Each skill ends by naming the next step, so you always know what to run next. Fo
 10. **create-obsidian-vault** — makes `.project/` browsable as an Obsidian vault: vault config plus a generated `Home.md` index of specs, knowledge, findings, and reports. **You invoke this one** whenever you want the vault created or its index refreshed. Agents never run it on their own; kick-off and migrate-project only remind you it exists.
 11. **research-topic** — standalone, **you invoke this one**: researches a topic in depth against external sources and captures the result as a durable `.project/Knowledge/` entry, so knowledge can be acquired deliberately rather than only as a byproduct of implementation. Scopes the question with you first, checks what the project already knows so it researches the gaps, and runs the sweep in subagents (`agents/research-topic.md`) — one per subtopic, in parallel — so the pages read stay out of your conversation. Entries are marked `type: research` with a date, sources, and a confidence level; anything contradicting existing knowledge goes to the Inbox for the next meeting rather than overwriting it. Useful before **kick-off** (inform the spec interview), before **implement-issue** (an unfamiliar library or protocol), or when a **project-meeting** finding turns out to be an open question rather than a decision.
 12. **generate-branding** — standalone, on demand: produces or refreshes a brand identity guide and visual assets in `.project/Branding/`. Independent of the loop above — run it whenever you want branding created or updated.
-13. **estimate-issue** — standalone, **you invoke this one**: scores a single issue's implementation complexity (Low/Medium/High/Exceptional) from its acceptance criteria, the code it touches, and captured knowledge, and names the model for your host that suits that tier. Read-only, and it recommends only — no skill changes the model of the session it runs in, so switching it stays your call. Useful before **implement-issue** when you'd rather not implement a hard issue on a small model, or a trivial one on a large one.
+13. **estimate-issue** — standalone, **you invoke this one** (or `run-milestone` does, per issue): scores a single issue's implementation complexity (Low/Medium/High/Exceptional) from its acceptance criteria, the code it touches, and captured knowledge, and names the model for your host that suits that tier. Read-only, and it recommends only — no skill changes the model of the session it runs in, so switching it stays your call. Useful before **implement-issue** when you'd rather not implement a hard issue on a small model, or a trivial one on a large one.
 14. **send-to-inbox** — standalone, run from any directory: turns a short note into a self-contained finding — with the context it came from, phrased in the target project's terms — and, after you confirm the draft, writes it to `.project/Inbox/` of the project you name. Useful when work in one project surfaces a requirement for another. It never commits; the next **project-meeting** in the target triages it.
+15. **run-milestone** — **Claude Code desktop app only**: works through the active milestone without you. It estimates each ready issue, starts one session per issue (in its own worktree, on the model the estimate suggests, at most three at a time), runs **implement-issue** there in non-interactive mode, and merges the PRs whose final review left nothing high or critical open. Questions it can't answer park the issue with a `needs-decision` label and a finding. It stops once a meeting is due (a critical finding, or three pending), or when nothing is left to do, and writes a run report. Your standing permissions — parallelism, and whether it may merge into the default branch — live in `.project/RUN-POLICY.md`. It never creates issues, edits specs, closes milestones, or resolves findings.
 
 Conventions shared by all skills (branch naming, committing to a protected base branch, milestone commands, the spec `Status:` lifecycle, Knowledge rules) live in `skills/_shared/conventions.md`; the next-action order, issue states and the meeting-due test shared by **project-status** and **merge-pr** live in `skills/_shared/next-action.md`; host-specific mappings, including the model recommended per complexity tier, live in `skills/_shared/runtime-adapters.md`.
 
@@ -61,7 +63,8 @@ Skills read and write project state here (created automatically on first use):
 |---|---|
 | `SPEC.md` | The original, confirmed project spec |
 | `SPEC-milestone-<###>-<slug>.md` | One confirmed spec per milestone, with a `Status: Planned/Active/Done` header |
-| `Reports/` | Short completion reports, one per finished issue |
+| `Reports/` | Short completion reports, one per finished issue, plus one per `run-milestone` run |
+| `RUN-POLICY.md` | Standing permissions for `run-milestone` |
 | `Inbox/` | Findings surfaced during implementation, awaiting discussion |
 | `Archive/` | Resolved findings and past meeting records |
 | `Knowledge/` | Durable learnings, organized by topic — captured during implementation, or researched deliberately via `research-topic` |
@@ -129,6 +132,7 @@ This links skills into `~/.agents/skills` and copies Codex custom agents into `~
 | Independent implementation review | Claude subagent manifest | Codex read-only custom agent |
 | Parallel topic research | Web-only Claude subagents | Read-only Codex custom agents |
 | Model recommendation per complexity tier | Sonnet / Opus / Fable | Terra / Sol / Astra |
+| Unattended milestone runs (`run-milestone`) | Desktop app only | Not supported |
 | Technical prevention of local reads by research agent | Full through the manifest tool allowlist | Not equivalent; current Codex custom-agent configuration supplies a behavioral prohibition, not a web-only tool allowlist |
 | Normal Git checkout | Full | Full |
 | Existing linked worktree / detached `HEAD` | Supported | Supported, including Codex App worktrees |

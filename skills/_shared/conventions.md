@@ -26,7 +26,7 @@ git push -u origin <type>/<short-slug>
 gh pr create --base <base> --fill
 ```
 
-Report the follow-up PR number rather than claiming the change landed on the base branch. Never bypass protection (no `--admin`, no force-push). In a linked worktree, skip the commit entirely and report the change as pending.
+Then `git switch <base>` again, so later work doesn't land on the side branch. Report the follow-up PR number rather than claiming the change landed on the base branch. Never bypass protection (no `--admin`, no force-push). In a linked worktree, skip the commit entirely and report the change as pending.
 
 ## GitHub milestones
 
@@ -68,10 +68,11 @@ Invoke them using the current host mapping in `runtime-adapters.md`. Codex's res
 
 A skill runs non-interactively only when the brief that invoked it says `mode: non-interactive` (the `run-milestone` coordinator does). In that mode it never waits for the user:
 
-- **A question only the user can answer** — park: add the `needs-decision` label to the issue (`gh label create needs-decision --force` first, so it exists) and record the question with its options as a finding. If an issue branch exists, write it to `.project/Inbox/findings-<slug>.md` there; otherwise put the finding in full in the final message for the caller to file. Then stop.
+- **A question only the user can answer** — park: add the `needs-decision` label to the issue and record the question with its options as a finding. If the issue has an open PR, write it to `.project/Inbox/findings-<slug>.md` on its branch; otherwise post it as an issue comment starting with `needs-decision:`, for the caller to file. Then stop.
 - **Unsafe repository state** — stop and report it; don't ask.
 - **A precondition not met** (an open blocker, an existing PR, a missing issue) — stop without changing anything.
 - Before stopping, commit and push to the issue branch every file this run wrote that is still uncommitted, so nothing stays behind in the worktree.
+- Last, record the outcome on GitHub, so it survives the caller being interrupted: remove the `in-progress` label from the issue, and for `RESULT: pr=<n> unresolved=none` add the `verified` label to the PR. Labels are created by the caller.
 
 End the final message with exactly one result line, last:
 

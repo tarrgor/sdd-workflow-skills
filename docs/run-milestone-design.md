@@ -1,6 +1,6 @@
 # run-milestone design
 
-Status: Draft — all decisions settled.
+Status: Built — `skills/run-milestone/SKILL.md`; first trial run pending.
 
 ## Goal
 
@@ -126,6 +126,22 @@ Interactive behaviour stays the default and, apart from the D9 review loop, unch
 - the "first match wins" next-action order, with one new rule: no ready issue but a parked one → `project-meeting`.
 
 `project-status` shows parked issues as their own state on `STATUS.html`.
+
+## Implementation notes
+
+Details settled while building `skills/run-milestone/SKILL.md`, after an independent review of the first draft:
+
+- **Sessions record their own outcome on GitHub labels,** so a run that is interrupted loses nothing: the session removes `in-progress` from its issue and, when the last review left nothing high or critical open, adds `verified` to its PR. The D1 gate reads `verified`. `needs-decision` parks (D7).
+- **D7, refined:** a question raised before a PR exists is posted as an issue comment starting with `needs-decision:`; the coordinator files it in the Inbox, and until then it already counts as a pending finding. With a PR, the finding goes on the branch as before.
+- **D8, refined:** the retry is a follow-up message to the same session, not a fresh one — a fresh session would collide with the branch the first one created. A second failure stops the session and parks the issue. `skipped` parks too, so a precondition problem can't be picked again.
+- **Feedback is review threads only.** `check-pr-comments` now resolves the threads it addressed (both modes — before, `merge-pr`'s "no unresolved threads" check could never pass after it). In non-interactive mode it parks on threads it won't act on, and runs one independent review before reporting, so its fixes don't merge on its own judgment.
+- **Merge blockers end the attempt:** when `merge-pr` stops (conflict, protection), the coordinator removes `verified`, records a finding and leaves the PR for the meeting.
+- **Overlap gate input:** `estimate-issue` now lists the files it expects to change; the coordinator compares them against running sessions and open PRs.
+- **Pending findings** count every open PR, not only `issue/*` ones — the coordinator's own findings may land via a PR when the base branch is protected; the base-branch fallback now switches back to the base afterwards.
+- **Model cap:** the desktop app starts a session only on the coordinator's model or a cheaper one. Run the coordinator on the largest model the milestone needs; issues whose tier is above it run at the coordinator's level, and the run report lists them.
+- **Permission mode:** sessions inherit the coordinator's. In a mode that asks before `git`/`gh`, sessions wait on prompts; the skill says so before starting.
+- **Branches in other worktrees:** `merge-pr` merges without deleting the local branch when the head branch is checked out in another worktree; `check-pr-comments` works on such a branch detached (`runtime-adapters.md` § Git worktrees).
+- **Refused session starts:** the coordinator stops starting, lets running sessions finish, and reports the refusal as the stop reason; re-running resumes.
 
 ## Host constraints (Claude Code desktop)
 

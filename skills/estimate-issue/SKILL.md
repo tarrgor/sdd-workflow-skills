@@ -1,6 +1,6 @@
 ---
 name: estimate-issue
-description: This skill should be used to estimate a GitHub issue's implementation complexity and recommend the model to implement it with, before any code is written. Trigger phrases include "estimate issue #12", "how complex is this issue", "which model should implement this", "abschätzen", or whenever an issue's difficulty needs judging up front. Read-only — recommends, changes nothing. User-invoked: no other skill runs it.
+description: This skill should be used to estimate a GitHub issue's implementation complexity and recommend the model to implement it with, before any code is written. Trigger phrases include "estimate issue #12", "how complex is this issue", "which model should implement this", "abschätzen", or whenever an issue's difficulty needs judging up front. Read-only — recommends, changes nothing. Run by the user, or by `run-milestone` for each ready issue; no other skill runs it.
 ---
 
 # Estimate Issue
@@ -44,6 +44,7 @@ Estimate the *implementation*, not the wording of the issue: a one-line issue ov
 Report in a few lines, no file written:
 
 - the tier, and the two or three signals that decided it — name the actual files, risks, or gaps;
+- the files the implementation will most likely change, as paths (`run-milestone` uses them to keep parallel sessions apart);
 - the recommended model for this host, per `runtime-adapters.md`;
 - anything the implementer should know up front: an ambiguity worth clarifying on the issue first, an open `Depends on #N` blocker, or a Knowledge entry that applies.
 

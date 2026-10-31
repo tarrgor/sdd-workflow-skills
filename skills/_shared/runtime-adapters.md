@@ -25,6 +25,13 @@ Astra and Fable are reserved for genuinely exceptional work; Sol carries ordinar
 
 Name the recommendation and let the user act on it.
 
+## Units of work
+
+`run-milestone` starts each issue as a unit of work: isolated in its own worktree, with its own model, reporting back when done.
+
+- **Claude Code desktop app:** the session-start tool (`start_session`) with `initiation: "user_asked"`, `context: "fresh"`, `use_worktree: true`, `source_branch: <base>`, a `model` and `effort` per tier, and a brief plus `background`. The app continues the coordinator when a started session ends its turn. A session can't run on a larger model or a higher effort than the coordinator's own; a tier above it runs at the coordinator's level. Started sessions inherit the coordinator's permission mode. A follow-up goes to the same session by its id (`SendMessage`); a session is stopped with the session-stop tool.
+- **Any other host:** unsupported — `run-milestone` says so and stops.
+
 ## Shell and filesystem
 
 - Prefer the host's file-search and file-editing tools over shell-specific pipelines.
@@ -42,6 +49,7 @@ Determine whether the current checkout is linked by comparing `git rev-parse --g
 - **Normal checkout:** the workflow may switch to and fast-forward the base branch before creating the issue branch.
 - **Existing linked worktree:** never create a nested worktree and never switch another checkout. Fetch the remote, verify the intended base ref, and create the issue branch directly from that ref if the current worktree is detached. Preserve any existing branch and stop on unrelated changes that make the operation ambiguous.
 - A Codex-created worktree may start at detached `HEAD`. This is expected, not an error.
+- A branch checked out in another worktree can't be switched to. Work on it detached (`git switch --detach origin/<branch>` after a fetch) and push with `git push origin HEAD:<branch>`; never delete or move it.
 
 ## Skill invocation labels
 

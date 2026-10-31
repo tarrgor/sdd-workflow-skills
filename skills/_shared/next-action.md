@@ -7,6 +7,7 @@ Shared decision rules for `project-status`, `merge-pr` and `run-milestone`. Mile
 For an open issue in the active milestone:
 
 - **Parked** — labelled `needs-decision`: waiting for a decision in the next meeting.
+- **In progress** — labelled `in-progress`: a `run-milestone` session is working on it.
 - **Blocked** — a `Depends on #<number>` blocker is still open.
 - **In review** — a PR from `issue/<number>-*` is open.
 - **Ready** — none of the above.
@@ -16,9 +17,10 @@ For an open issue in the active milestone:
 The union, by filename, of:
 
 - `.project/Inbox/findings-*.md` on the base branch, and
-- `.project/Inbox/` files each open `issue/*` PR adds or changes (`gh pr diff <number> --name-only`).
+- `.project/Inbox/` files each open PR adds or changes (`gh pr diff <number> --name-only`), and
+- `needs-decision:` comments on parked issues not yet filed as an Inbox file.
 
-Counting the PR branches matters: issue work writes its findings on the issue branch, so they reach the base branch only on merge.
+Counting beyond the base branch matters: issue work writes its findings on the issue branch, so they reach the base branch only on merge.
 
 ## Meeting due
 

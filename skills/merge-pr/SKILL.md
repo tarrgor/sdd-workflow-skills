@@ -24,11 +24,11 @@ The base branch is whatever the PR targets: `develop` where the project has one,
 - Check whether the current directory is a linked git worktree, not the main checkout: `git rev-parse --git-common-dir --git-dir` — if the two paths differ, it's a worktree. (Also visible via `git worktree list`.)
 - **Normal branch (not a worktree):** `gh pr merge <number> --squash --delete-branch`. Always use the squash merge method. Confirm the remote branch was deleted; if `--delete-branch` didn't remove it, delete it explicitly.
 - If the merge is rejected by branch protection (missing approvals, required checks), stop and report what protection requires. Never bypass it with `--admin`.
-- **Linked worktree:** the local branch is checked out in this worktree and bound to the session — do not delete it and do not switch it. Merge without `--delete-branch` (`gh pr merge <number> --squash`), then delete only the remote branch (`git push origin --delete <branch>`). Leave the local branch and worktree alone.
+- **Linked worktree, or the head branch checked out in another worktree** (`git worktree list`): the local branch belongs to that worktree and its session — do not delete it and do not switch it. Merge without `--delete-branch` (`gh pr merge <number> --squash`), then delete only the remote branch (`git push origin --delete <branch>`). Leave the local branch and worktree alone.
 
 ## 4. Clean up locally
 
-Only for a normal branch (skip entirely for a linked worktree — no switch, no branch deletion, no pull there):
+Only for a normal branch (skip entirely for a linked worktree — no switch, no branch deletion, no pull there; when the head branch is checked out in another worktree, skip only the `git branch -d`):
 
 ```bash
 git switch <base>

@@ -38,6 +38,7 @@ $claudeSkillContracts = @{
     'skills/implement-issue/SKILL.md' = @('subagent_type: verify-implementation')
     'skills/verify-implementation/SKILL.md' = @('subagent_type: verify-implementation')
     'skills/research-topic/SKILL.md' = @('subagent_type: research-topic')
+    'skills/run-milestone/SKILL.md' = @('mode: non-interactive', 'Units of work')
     'skills/kick-off/SKILL.md' = @('root `AGENTS.md` containing just `Read CLAUDE.md.`')
     'skills/create-obsidian-vault/SKILL.md' = @('disable-model-invocation: true', 'run it with `/create-obsidian-vault`')
 }
@@ -115,7 +116,7 @@ foreach ($agentFile in Get-ChildItem -LiteralPath (Join-Path $repoRoot 'agents/c
     }
 }
 
-foreach ($skillName in @('check-pr-comments', 'create-obsidian-vault', 'research-topic')) {
+foreach ($skillName in @('check-pr-comments', 'create-obsidian-vault', 'research-topic', 'run-milestone')) {
     $metadata = Join-Path $skillRoot "$skillName/agents/openai.yaml"
     if (-not (Test-Path -LiteralPath $metadata -PathType Leaf)) {
         Add-ValidationError "Missing Codex invocation policy: $skillName"
