@@ -47,7 +47,7 @@ Each decision records what was decided and, where it matters, what was rejected 
 
 ### D1 — Merge authority
 
-**Decided: merge autonomously, behind gates.** The coordinator runs `merge-pr` only when the PR targets the base branch, the independent review left no unresolved finding of high severity (read from the session's result line — the review's findings are not stored anywhere else), and no Inbox finding names this issue as blocking. CI is not part of the gate: the project may have none. The implementing session's own build/test run is the check, and the coordinator re-runs the full test suite on the base branch after each merge. If the base branch is the repository's default branch (no `develop`), autonomous merge additionally requires an explicit opt-in in the run policy.
+**Decided: merge autonomously, behind gates.** The coordinator runs `merge-pr` only when the PR targets the base branch, the independent review left no unresolved finding of high severity (read from the session's result line, which reports the last review's verdict per D9 — the review's findings are not stored anywhere else), and no Inbox finding names this issue as blocking. CI is not part of the gate: the project may have none. The implementing session's own build/test run is the check, and the coordinator re-runs the full test suite on the base branch after each merge. If the base branch is the repository's default branch (no `develop`), autonomous merge additionally requires an explicit opt-in in the run policy.
 
 Rejected: stopping at "PR ready" (dependent issues stay blocked until the user merges, so a run rarely gets past the first layer of the dependency graph); merging without gates.
 
@@ -85,6 +85,19 @@ The conventions rule "this workflow does not implement issues in subagents" stay
 
 **Decided: retry a failed unit of work once, fresh; on a second failure, park the issue** with a finding describing both attempts. A failure is anything that ends without a PR, or with a PR whose build/tests fail after the session's own fixes.
 
+### D9 — Review loop after fixes
+
+**Decided: `implement-issue` re-reviews after fixing a high or critical finding, at most twice.** Today Step 10 fixes the valid findings once and moves on. Unattended, nobody checks that fix, and D1's merge gate would rest on the implementer's own judgment.
+
+- Re-review only when a high or critical finding was fixed in the round before. Low and medium findings never trigger another round — the reviewer reports for coverage, so "until no findings" would never end.
+- Each round is a fresh `verify-implementation` run over the whole PR, told which high or critical findings the previous round raised so it can confirm they are gone.
+- At most two fix rounds (three reviews in total).
+- The implementer may not dismiss a high or critical finding as not actionable on its own; a dismissed one counts as unresolved.
+- Exit: nothing high or critical left → done. Cap reached with one still open → finding in the Inbox, PR not merge-eligible under D1. The reviewer reports the approach itself as wrong → stop at once, finding in the Inbox, issue parked (D7); fixes don't converge on a wrong approach.
+- The last review's verdict is what the result line reports, not the implementer's assessment.
+
+Applies in both modes, as one condition in Step 10, so the skill keeps a single path. Only the ending differs by mode (Prerequisite A).
+
 ### Where the run policy lives
 
 The answers to D1, D2, D4 and D6 are durable authorisation, not per-run arguments: they go in `.project/RUN-POLICY.md`, written once with the user (by `run-milestone` on first use, after confirming each value), committed, and reviewed in meetings like any other project document. A run never widens it; the user edits it, or a meeting changes it.
@@ -100,7 +113,7 @@ The answers to D1, D2, D4 and D6 are durable authorisation, not per-run argument
 | Review findings disputed → "user reviews, then `check-pr-comments`" | Disputed findings go to `findings-<slug>.md`; PR stays open, not merge-eligible under D1 |
 | Ends by suggesting the next skill | Ends with a machine-readable result line the coordinator parses: `RESULT: pr=<n> unresolved=<highest severity left open, or none> \| parked \| failed`, plus the reason |
 
-Interactive behaviour stays the default and unchanged.
+Interactive behaviour stays the default and, apart from the D9 review loop, unchanged.
 
 ## Prerequisite B — one shared next-action rule
 
@@ -123,8 +136,8 @@ Observed behaviour of the session tooling, to be confirmed while building:
 
 ## Delivery order
 
-1. Settle D1–D8 (this document).
-2. Prerequisite A and Prerequisite B — independent of each other, can run in parallel.
+1. Settle D1–D9 (this document).
+2. Prerequisite A (with the D9 review loop) and Prerequisite B — independent of each other, can run in parallel.
 3. `run-milestone` skill, plus the `estimate-issue` caller change (D6), and the unit-of-work adapter (D5) in `runtime-adapters.md`.
 4. README (workflow diagram, host table), validator contracts for the new skill.
 5. A trial run on a small real milestone with one session at a time, before raising parallelism to D2's default.
