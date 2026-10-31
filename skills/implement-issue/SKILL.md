@@ -62,7 +62,6 @@ Read `../_shared/runtime-adapters.md` before branch setup or subagent invocation
 - A Knowledge entry whose claim your own work disproved — correct it in place, per the conventions governance rule: fix the wrong claim, leave the rest of the entry alone, and record the correction in the report (Step 8). Only raise it as a finding instead when the correct value isn't unambiguous, or when fixing it would mean rewriting or deleting the entry.
 - Anything else found during implementation that needs the project owner's attention (scope gaps, follow-up work, potential new issues, risks, a Knowledge contradiction you couldn't settle) — write `.project/Inbox/findings-<slug>.md` describing it, for review at the next project meeting.
 - Anything learned worth keeping for future implementations (a gotcha, a convention, an architectural decision, a reusable pattern) — write it into `.project/Knowledge/`, in a subdirectory grouped by general topic (e.g. `architecture/`, `testing/`, `tooling/`); create a new subdirectory when nothing existing fits.
-- Skip either if nothing qualifies — don't create empty or filler files.
 
 ## 7. Publish
 
@@ -89,7 +88,7 @@ This is the filter stage: the review reports for coverage, so expect low-severit
 - For each valid finding, make the fix, then re-run the project's build/test commands; fix failures before proceeding.
 - Stale knowledge findings aren't code fixes: confirm the reviewer's claim against the code yourself, then correct the entry in place as in Step 6. If you can't confirm it, or the right value is ambiguous, add it to this issue's `.project/Inbox/findings-<slug>.md` instead.
 - Commit and push the fixes to the existing branch.
-- No findings: say so; do not re-run the review or invent work.
+- No findings: say so; do not re-run the review.
 
 ## 11. Suggest the next step
 
@@ -97,6 +96,5 @@ End by naming the next step: all findings addressed, none returned, or the revie
 
 ## Failure handling
 
-- Never claim a build, test, push, comment, or PR succeeded unless confirmed by the command/tool output.
 - If auth, permissions, network, or CI blocks progress, preserve completed work and report the exact blocker.
 - If requirements conflict with repository rules or constraints, comment on the issue (or tell the user) rather than guessing.

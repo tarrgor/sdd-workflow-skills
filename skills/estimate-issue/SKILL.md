@@ -47,6 +47,6 @@ Report in a few lines, no file written:
 - the recommended model for this host, per `runtime-adapters.md`;
 - anything the implementer should know up front: an ambiguity worth clarifying on the issue first, an open `Depends on #N` blocker, or a Knowledge entry that applies.
 
-Recommend the model; never claim to have switched it. Switching the session model is the user's action.
+Recommend the model; switching the session model is the user's action.
 
 End by naming the next step — set the model if it differs from the current one, then run `implement-issue <number>`.

@@ -23,7 +23,7 @@ The table names model families, not versions: use the newest release of the name
 
 Astra and Fable are reserved for genuinely exceptional work; Sol carries ordinary coding issues up to and including the High tier. If the host offers a reasoning-effort setting, raise it with the tier rather than reaching for a larger model.
 
-Name the recommendation and let the user act on it. Never state or imply that a model was switched.
+Name the recommendation and let the user act on it.
 
 ## Shell and filesystem
 
