@@ -5,7 +5,7 @@ description: This skill should be used to implement a single GitHub issue from a
 
 # Implement Issue
 
-Follow this workflow end to end. Keep the user informed at important transitions, but continue autonomously unless a blocking question or unsafe repository state requires their input.
+Follow this workflow end to end. Keep the user informed at important transitions, but continue autonomously unless a blocking question or unsafe repository state requires their input. When the brief says `mode: non-interactive`, apply the non-interactive rules from the conventions wherever this skill would stop for the user, and end with their result line.
 
 Branch/slug format, base-branch rule, `Depends on #N` format, the Knowledge discipline, written-deliverable sizing, and the delegation rule are defined in `../_shared/conventions.md` (relative to this skill's directory).
 
@@ -36,7 +36,7 @@ Read `../_shared/runtime-adapters.md` before branch setup or subagent invocation
 - If the issue touches UI, styling, or any brand-facing output, also read `.project/Branding/BRAND.md` and `.project/Branding/Assets/`, if present, and implement against them (palette, typography, voice, logo/asset usage) — don't invent brand decisions the guide already made.
 - Consult `.project/Knowledge/`, if present, per the conventions discipline: read only name-relevant entries; what you read is binding unless a checkable claim is contradicted by your own investigation — then trust what you observe and correct the entry in Step 6.
 - Restate the acceptance criteria internally; do not implement from the title alone.
-- If something genuinely blocks a correct implementation (not resolvable from the codebase or convention), post one concise comment on the issue explaining the ambiguity, then stop and wait. Resume once answered.
+- If something genuinely blocks a correct implementation (not resolvable from the codebase or convention), post one concise comment on the issue explaining the ambiguity, then stop and wait. Resume once answered. Non-interactive: park instead.
 
 ## 4. Create the branch
 
@@ -62,7 +62,6 @@ Read `../_shared/runtime-adapters.md` before branch setup or subagent invocation
 - A Knowledge entry whose claim your own work disproved — correct it in place, per the conventions governance rule: fix the wrong claim, leave the rest of the entry alone, and record the correction in the report (Step 8). Only raise it as a finding instead when the correct value isn't unambiguous, or when fixing it would mean rewriting or deleting the entry.
 - Anything else found during implementation that needs the project owner's attention (scope gaps, follow-up work, potential new issues, risks, a Knowledge contradiction you couldn't settle) — write `.project/Inbox/findings-<slug>.md` describing it, for review at the next project meeting.
 - Anything learned worth keeping for future implementations (a gotcha, a convention, an architectural decision, a reusable pattern) — write it into `.project/Knowledge/`, in a subdirectory grouped by general topic (e.g. `architecture/`, `testing/`, `tooling/`); create a new subdirectory when nothing existing fits.
-- Skip either if nothing qualifies — don't create empty or filler files.
 
 ## 7. Publish
 
@@ -78,25 +77,27 @@ Write `.project/Reports/<slug>.md` — a short report of what was implemented an
 
 Skip this step and Step 10 for a code-free change (Step 5) and go straight to Step 11.
 
-- Launch the `verify-implementation` agent as a subagent so it reviews with its own fresh context. Give it the issue number and PR number. Under Claude Code, retain the existing Agent-tool invocation (`subagent_type: verify-implementation`, `run_in_background: false`). Under Codex, spawn the installed `verify-implementation` custom agent using the mapping in `runtime-adapters.md`.
+- Launch the `verify-implementation` agent as a subagent so it reviews with its own fresh context. Give it the issue number and PR number. Under Claude Code, use the Agent tool with `subagent_type: verify-implementation`. Under Codex, spawn the installed `verify-implementation` custom agent using the mapping in `runtime-adapters.md`.
 - Wait for it to finish — do not proceed, merge, or report done while it is running. It returns its findings directly in its final message; it does not post to the PR.
 
 ## 10. Address the review findings
 
 This is the filter stage: the review reports for coverage, so expect low-severity and low-confidence findings among the real ones. Filtering here is the point — do not act on everything returned.
 
-- Findings returned: judge each one against the issue's acceptance criteria — valid and actionable, or not. Rank by the reported severity and confidence. For anything not actionable, note why in one line instead of acting on it.
+- Findings returned: judge each one against the issue's acceptance criteria — valid and actionable, or not. Rank by the reported severity and confidence. For anything not actionable, note why in one line instead of acting on it. Never dismiss a high or critical finding on your own judgment: fix it, or leave it open for Step 11.
 - For each valid finding, make the fix, then re-run the project's build/test commands; fix failures before proceeding.
 - Stale knowledge findings aren't code fixes: confirm the reviewer's claim against the code yourself, then correct the entry in place as in Step 6. If you can't confirm it, or the right value is ambiguous, add it to this issue's `.project/Inbox/findings-<slug>.md` instead.
 - Commit and push the fixes to the existing branch.
-- No findings: say so; do not re-run the review or invent work.
+- **Re-review** when this round fixed a high or critical finding: return to Step 9 for a fresh review, telling the reviewer which high or critical findings the previous round raised so it confirms they are gone. At most two fix rounds (three reviews). If a review reports the approach itself as wrong, end the loop — that is the user's decision (Step 11).
+- Otherwise — no findings, or only low or medium ones — say so; do not re-run the review.
 
 ## 11. Suggest the next step
 
-End by naming the next step: all findings addressed, none returned, or the review skipped as code-free → suggest `merge-pr`; anything unresolved or disputed → suggest the user review it and run `check-pr-comments` afterwards.
+End by naming the next step: all findings addressed, none returned, or the review skipped as code-free → suggest `merge-pr`; anything unresolved or disputed, or an approach the reviewer reports as wrong → suggest the user review it and run `check-pr-comments` afterwards.
+
+Non-interactive: write every high or critical finding still open after the last round, and a reported wrong approach, to `.project/Inbox/findings-<slug>.md`, then commit and push; a wrong approach also parks the issue. The result line reports the last review's verdict, not your own assessment.
 
 ## Failure handling
 
-- Never claim a build, test, push, comment, or PR succeeded unless confirmed by the command/tool output.
 - If auth, permissions, network, or CI blocks progress, preserve completed work and report the exact blocker.
 - If requirements conflict with repository rules or constraints, comment on the issue (or tell the user) rather than guessing.

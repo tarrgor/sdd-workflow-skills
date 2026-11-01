@@ -4,24 +4,33 @@ Use the current host's native capabilities. These mappings change invocation and
 
 ## Subagents
 
-- **Claude Code:** use the existing `Agent` tool with the requested `subagent_type` and wait synchronously, exactly as the calling skill specifies.
+- **Claude Code:** use the `Agent` tool with the requested `subagent_type`. Subagents run in the background and notify the caller when they finish; wait for that result before any step that depends on it, exactly as the calling skill specifies.
 - **Codex:** spawn the matching custom agent with the collaboration/subagent capability, explicitly tell it to use the corresponding `$verify-implementation` or `$research-topic` skill, pass the complete brief, and wait for its final result before continuing. The Codex custom agents are named `verify-implementation` and `research-topic` — the same names Claude Code uses; their source files live in `agents/codex/`.
 - If the named agent is unavailable, follow the fallback in the calling skill. Never claim independent review or isolated context when the work ran in the caller.
 
 ## Model selection
 
-A skill may recommend a model per complexity tier; it can never set one. Neither host lets a running session switch its own model — the session model is the user's choice (`/model`, or the host's model picker). Only subagent invocations carry a model of their own, and this workflow does not implement issues in subagents.
+A skill may recommend a model per complexity tier; it never changes the model of the session it runs in — that stays the user's choice (`/model`, or the host's model picker). A model can be set only on work a skill starts itself (a subagent, or a new session where the host can start one), and this workflow does not implement issues in subagents.
+
+The table names model families, not versions: use the newest release of the named family that the host offers.
 
 | Tier | Claude Code | Codex |
 |---|---|---|
 | Low | Sonnet | Terra |
-| Medium | Opus 5 | Sol |
-| High | Opus 5 | Sol |
+| Medium | Opus | Sol |
+| High | Opus | Sol |
 | Exceptional | Fable | Astra |
 
 Astra and Fable are reserved for genuinely exceptional work; Sol carries ordinary coding issues up to and including the High tier. If the host offers a reasoning-effort setting, raise it with the tier rather than reaching for a larger model.
 
-Name the recommendation and let the user act on it. Never state or imply that a model was switched.
+Name the recommendation and let the user act on it.
+
+## Units of work
+
+`run-milestone` starts each issue as a unit of work: isolated in its own worktree, with its own model, reporting back when done.
+
+- **Claude Code desktop app:** the session-start tool (`start_session`) with `initiation: "user_asked"`, `context: "fresh"`, `use_worktree: true`, `source_branch: <base>`, a `model` and `effort` per tier, and a brief plus `background`. The app continues the coordinator when a started session ends its turn. A session can't run on a larger model or a higher effort than the coordinator's own; a tier above it runs at the coordinator's level. Started sessions inherit the coordinator's permission mode. A follow-up goes to the same session by its id (`SendMessage`); a session is stopped with the session-stop tool.
+- **Any other host:** unsupported — `run-milestone` says so and stops.
 
 ## Shell and filesystem
 
@@ -40,6 +49,7 @@ Determine whether the current checkout is linked by comparing `git rev-parse --g
 - **Normal checkout:** the workflow may switch to and fast-forward the base branch before creating the issue branch.
 - **Existing linked worktree:** never create a nested worktree and never switch another checkout. Fetch the remote, verify the intended base ref, and create the issue branch directly from that ref if the current worktree is detached. Preserve any existing branch and stop on unrelated changes that make the operation ambiguous.
 - A Codex-created worktree may start at detached `HEAD`. This is expected, not an error.
+- A branch checked out in another worktree can't be switched to. Work on it detached (`git switch --detach origin/<branch>` after a fetch) and push with `git push origin HEAD:<branch>`; never delete or move it.
 
 ## Skill invocation labels
 

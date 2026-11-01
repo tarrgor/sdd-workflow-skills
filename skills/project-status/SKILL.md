@@ -7,31 +7,23 @@ description: This skill should be used to report where the project stands and re
 
 Reports where the project stands and recommends exactly one next action. Read-only except for `STATUS.html` at the project root (§4) and its `.gitignore` line: no other file writes, no `gh` mutations.
 
-Milestone naming, the `Status:` lifecycle, and the `Depends on #N` format are defined in `../_shared/conventions.md` (relative to this skill's directory).
+Milestone naming, the `Status:` lifecycle, and the `Depends on #N` format are defined in `../_shared/conventions.md`; issue states, pending findings, and the next-action order in `../_shared/next-action.md` (both relative to this skill's directory).
 
 ## 1. Gather
 
 - **Active milestone**: read the `Status:` headers of `.project/SPEC-milestone-*.md` and pick the `Active` one (legacy fallback per conventions). Note any spec still `Planned`.
-- **Milestone progress**: `gh issue list --milestone "<title>" --state all --json number,title,state,body` — open/closed counts; parse `Depends on #<number>` lines in open issues to spot blocked ones.
+- **Milestone progress**: `gh issue list --milestone "<title>" --state all --json number,title,state,body,labels` — open/closed counts; give each open issue its state per `next-action.md`.
 - **Open PRs**: `gh pr list --json number,title,headRefName`, filtered to `issue/*` branches; check `gh pr checks <number>` and unresolved review threads for each.
-- **Findings**: count `.project/Inbox/findings-*.md`; note any that look critical from a skim.
+- **Findings**: count the pending findings per `next-action.md`; note any that look critical from a skim.
 - **Last meeting**: newest `.project/Archive/MEETING-<YYYY-MM-DD>.md` by filename date.
 
 ## 2. Report
 
-One compact summary: active milestone with x/y issues closed, open PRs and their state, Inbox findings count, last meeting date. Flag anything unusual (blocked issues, a `Planned` spec without issues, a finished milestone still open).
+One compact summary: active milestone with x/y issues closed, open PRs and their state, Inbox findings count, last meeting date. Flag anything unusual (parked or blocked issues, a `Planned` spec without issues, a finished milestone still open).
 
 ## 3. Recommend exactly one next action
 
-First match wins:
-
-1. Any critical Inbox finding, or three or more pending → `project-meeting`.
-2. An open PR with unresolved feedback or failing checks → `check-pr-comments` for that PR.
-3. An open PR that is clean → `merge-pr` for that PR.
-4. An open issue whose `Depends on` blockers are all closed → `implement-issue #<n>` (lowest such number).
-5. A `Planned` spec with no issues yet → `create-spec-issues`.
-6. All milestone issues closed but the milestone still open (on GitHub or spec not `Done`) → `project-meeting`, to decide with the user whether to close it.
-7. Milestone closed (or no active spec) → `kick-off` the next milestone.
+Apply the order in `next-action.md` to what §1 gathered; the first match is the recommendation.
 
 ## 4. Write `STATUS.html`
 
@@ -50,7 +42,7 @@ Write the JSON to a temp file outside the project (or pipe it on stdin with no f
 | `milestone` | active milestone `title`, `closed`, `total`; `null` if none |
 | `planned` | titles of `Planned` specs |
 | `next` | `action` (one line), `skill`, `command` (e.g. `/implement-issue 12`); `null` if nothing is outstanding |
-| `issues` | per milestone issue, by number: `number`, `title`, `state` — `closed`, `in-review` (open PR), `blocked` (open `Depends on` blocker), else `ready` — and `blocked_by` (open blocker numbers) |
+| `issues` | per milestone issue, by number: `number`, `title`, `state` — `closed`, else the state from `next-action.md`: `parked`, `in-progress`, `blocked`, `in-review` or `ready` — and `blocked_by` (open blocker numbers) |
 | `prs` | `number`, `title`, `branch`, `checks` (`passing`/`failing`/`pending`/`none`), `unresolved` (thread count) |
 | `findings` | `count`, `critical` (one line each) |
 | `last_meeting` | date of the newest meeting archive |
