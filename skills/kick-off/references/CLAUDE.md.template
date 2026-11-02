@@ -1,5 +1,9 @@
 # CLAUDE.md
 
+## Important
+
+- IMPORTANT: NEVER include any secret or personal data in repository files.
+
 ## Principles
 
 - Think first — state assumptions, ask if unsure, surface multiple interpretations instead of picking silently, flag simpler alternatives.
