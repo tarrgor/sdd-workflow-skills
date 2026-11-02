@@ -17,6 +17,8 @@ jobs:
         run: ./scripts/validate.ps1
       - name: Parse Codex custom-agent TOML
         run: python scripts/validate-codex-agents.py
+      - name: Preserve Claude milestone behavior
+        run: python scripts/validate-run-milestone.py
       - name: Test PowerShell installer
         if: runner.os == 'Windows'
         shell: pwsh

@@ -1,6 +1,6 @@
 ---
 name: run-milestone
-description: This skill should be used to work through the active milestone's ready issues unattended — implementing, reviewing and merging them in parallel sessions — until the next project meeting is due. Trigger phrases include "run the milestone", "work through the issues", "keep going until the next meeting", "continue the run", or whenever the user wants the issue loop to run without them. Claude Code desktop app only. Never creates issues, edits specs, closes milestones or resolves findings.
+description: This skill should be used to work through the active milestone's ready issues unattended — implementing, reviewing and merging them in parallel sessions — until the next project meeting is due. Trigger phrases include "run the milestone", "work through the issues", "keep going until the next meeting", "continue the run", or whenever the user wants the issue loop to run without them. Claude Code desktop app and Codex desktop with chat tools; not CLI or IDE. Never creates issues, edits specs, closes milestones or resolves findings.
 ---
 
 # Run Milestone
@@ -8,6 +8,10 @@ description: This skill should be used to work through the active milestone's re
 Coordinates; never implements, reviews or fixes anything itself. Every issue runs in its own session, which uses the existing skills in non-interactive mode and records its outcome on GitHub labels.
 
 Rules used here: `../_shared/next-action.md` (issue states, pending findings, meeting due), `../_shared/conventions.md` (base branch, committing to it, non-interactive mode and its `RESULT:` line), and `../_shared/runtime-adapters.md` § Units of work (starting, messaging and stopping sessions) — all relative to this skill's directory.
+
+<!-- codex-run-milestone:start -->
+**Codex desktop only:** before any action, read [references/codex-desktop.md](references/codex-desktop.md). Its Codex-specific rules replace the corresponding session, permission, recovery and merge details below. Claude Code skips this reference and follows the steps below unchanged.
+<!-- codex-run-milestone:end -->
 
 ## 1. Preconditions
 

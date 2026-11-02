@@ -2,6 +2,8 @@
 
 Status: Built — `skills/run-milestone/SKILL.md`; first trial run pending.
 
+Codex extension: the desktop-only adapter in `skills/run-milestone/references/codex-desktop.md` adds explicit chat/worktree authorization, default or approved per-tier models, durable issue-comment records, resumable waits, feedback capacity gates and commit-bound merge receipts. It overrides D5's original Codex exclusion only when the desktop chat tools are available. CLI/IDE remain unsupported. The Claude decisions and session loop below are retained unchanged; Codex live acceptance is tracked in `docs/codex-run-milestone-acceptance.md`.
+
 ## Goal
 
 A coordinator skill, `run-milestone`, that keeps working through a milestone's ready issues without the user at the keyboard, and stops as soon as the next interactive `project-meeting` is due. The user's role moves from triggering every step to granting a bounded mandate up front and making decisions in meetings.
