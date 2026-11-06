@@ -182,6 +182,35 @@ The [Codex adapter](skills/run-milestone/references/codex-desktop.md) journals c
 
 Complete the [Codex milestone acceptance scenarios](docs/codex-run-milestone-acceptance.md) with one worker before raising parallelism.
 
+## Releases
+
+Push a semantic version tag on a commit already in `main` to publish both plugin ZIPs:
+
+```bash
+git switch main
+git pull --ff-only origin main
+git tag -a v1.0.0 -m "Release 1.0.0"
+git push origin v1.0.0
+```
+
+The release workflow must be present in the tagged commit. Tags may use `v1.0.0` or `1.0.0`; the ZIP manifests receive `1.0.0`. A tag such as `v1.1.0-rc.1` creates a GitHub prerelease. Invalid versions and tags outside `main` fail before publication.
+
+CI validates and packages the tagged checkout, then creates a GitHub Release with generated notes and these downloadable assets:
+
+- `sdd-workflow-claude-1.0.0.zip`: Claude manifest, skills, shared resources, and Claude agents.
+- `sdd-workflow-codex-1.0.0.zip`: Codex manifest, skills, and shared resources.
+
+Use these assets for plugin uploads rather than GitHub's automatic source ZIP. Each archive has exactly one plugin manifest at the root. Version stamping changes archive contents only; CI does not commit version changes or move tags. The Claude marketplace checkout continues to follow repository commits.
+
+To inspect a release build locally:
+
+```bash
+python scripts/package-plugins.py --tag v1.0.0 --output-dir work/release
+python tests/test-package-plugins.py
+```
+
+A rerun can upload to an existing release, but fails if an asset with the same name already exists. If a release was partially uploaded, remove its already uploaded plugin ZIPs before rerunning; use a new version tag for changed code. No separate release token is needed: the publishing job uses GitHub's scoped `GITHUB_TOKEN` with `contents: write`. Repository or organization policy must permit it.
+
 ## License
 
 [MIT](LICENSE) © tarrgor.

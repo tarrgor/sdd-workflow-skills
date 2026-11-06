@@ -1,0 +1,70 @@
+name: Release plugins
+
+on:
+  push:
+    tags:
+      - 'v[0-9]*'
+      - '[0-9]*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Require a tag on main
+        run: |
+          git fetch origin main:refs/remotes/origin/main
+          git merge-base --is-ancestor HEAD origin/main
+      - name: Validate source and packaging
+        run: |
+          python scripts/validate-plugin.py
+          python scripts/validate-codex-agents.py
+          python tests/test-plugin-validation.py
+          python tests/test-package-plugins.py
+      - name: Build versioned plugin archives
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: python scripts/package-plugins.py --tag "$RELEASE_TAG" --output-dir work/release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: plugin-release
+          path: work/release/*.zip
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: plugin-release
+          path: release
+      - name: Publish GitHub Release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" release/*.zip
+          else
+            flags=()
+            if [[ "${RELEASE_TAG%%+*}" == *-* ]]; then
+              flags+=(--prerelease)
+            fi
+            gh release create "$RELEASE_TAG" release/*.zip --verify-tag --generate-notes "${flags[@]}"
+          fi
