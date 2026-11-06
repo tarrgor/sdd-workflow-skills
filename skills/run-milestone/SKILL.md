@@ -9,9 +9,7 @@ Coordinates; never implements, reviews or fixes anything itself. Every issue run
 
 Rules used here: `../_shared/next-action.md` (issue states, pending findings, meeting due), `../_shared/conventions.md` (base branch, committing to it, non-interactive mode and its `RESULT:` line), and `../_shared/runtime-adapters.md` § Units of work (starting, messaging and stopping sessions) — all relative to this skill's directory.
 
-<!-- codex-run-milestone:start -->
 **Codex desktop only:** before any action, read [references/codex-desktop.md](references/codex-desktop.md). Its Codex-specific rules replace the corresponding session, permission, recovery and merge details below. Claude Code skips this reference and follows the steps below unchanged.
-<!-- codex-run-milestone:end -->
 
 ## 1. Preconditions
 

@@ -155,7 +155,7 @@ The coordinator confirms only missing policy values or authorizations and record
 
 The [Codex adapter](skills/run-milestone/references/codex-desktop.md) journals chat identities and attempts in `codex-run:` issue comments, counts feedback chats toward the same concurrency limit, and binds merge receipts to the reviewed commit. Permission prompts or uncertain chat state pause dispatch; re-invoking the skill reconciles recorded chats before starting more work. It does not promise an unattended restart after the coordinator ends, and leaves worktrees available for inspection.
 
-Complete the [Codex milestone acceptance scenarios](docs/codex-run-milestone-acceptance.md) with one worker before raising parallelism. The Claude session mapping and loop are unchanged; the compatibility validator checks their baseline.
+Complete the [Codex milestone acceptance scenarios](docs/codex-run-milestone-acceptance.md) with one worker before raising parallelism.
 
 ## License
 
