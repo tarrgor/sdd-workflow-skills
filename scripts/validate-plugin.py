@@ -51,6 +51,14 @@ def validate(root: Path) -> list[str]:
     version = codex.get("version")
     if not isinstance(version, str) or not re.fullmatch(r"(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)", version):
         errors.append("Codex plugin version is required and must use major.minor.patch")
+    interface = codex.get("interface")
+    if not isinstance(interface, dict):
+        errors.append("Codex plugin interface is required")
+    else:
+        for field in ("displayName", "shortDescription", "longDescription", "developerName"):
+            value = interface.get(field)
+            if not isinstance(value, str) or not value.strip():
+                errors.append(f"Codex plugin interface.{field} must be a non-empty string")
     if codex.get("name") != plugin.get("name"):
         errors.append("Codex and Claude plugin names must match")
     if codex.get("skills") != "./skills":

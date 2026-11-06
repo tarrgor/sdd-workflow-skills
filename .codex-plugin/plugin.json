@@ -13,6 +13,7 @@
   "interface": {
     "displayName": "SDD Workflow",
     "shortDescription": "Spec-driven development workflow on GitHub.",
-    "developerName": "tarrgor"
+    "developerName": "tarrgor",
+    "longDescription": "A spec-driven development workflow for GitHub projects: turn ideas into specifications and milestone issues, implement and independently review changes, address feedback, merge pull requests, and capture project decisions and research."
   }
 }
