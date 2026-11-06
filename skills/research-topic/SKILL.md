@@ -1,6 +1,6 @@
 ---
 name: research-topic
-description: This skill should be used to research a topic in depth against external sources and capture the result as a durable entry in `.project/Knowledge/`. Trigger phrases include "research <topic>", "look into <topic> for the project", "find out how <X> works", "gather knowledge about <X>", "what's the state of the art for <X>", or whenever a decision needs external knowledge the project doesn't have yet. User-invoked and on-demand — other skills may recommend it, but never run it on their own.
+description: This skill should be used to research a topic in depth against external sources and capture the result as a durable entry in `.project/Knowledge/`. Trigger phrases include "research TOPIC", "look into TOPIC for the project", "find out how X works", "gather knowledge about X", "what's the state of the art for X", or whenever a decision needs external knowledge the project doesn't have yet. User-invoked and on-demand — other skills may recommend it, but never run it on their own.
 ---
 
 # Research Topic

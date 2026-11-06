@@ -1,6 +1,7 @@
 """Check the Claude Code plugin and marketplace manifests stay consistent with the repo."""
 
 import json
+import re
 from pathlib import Path
 import sys
 
@@ -20,6 +21,12 @@ def validate(root: Path) -> list[str]:
         errors.append("marketplace entry name must equal plugin.json name")
     if "agents" in plugin:
         errors.append("plugin.json must not set \"agents\": the default agents/ scan is what loads them")
+    # claude.ai rejects plugin uploads whose descriptions contain anything tag-like.
+    for manifest in [*root.glob("skills/*/SKILL.md"), *root.glob("agents/*.md")]:
+        front = manifest.read_text(encoding="utf-8").split("---", 2)[1]
+        for line in front.splitlines():
+            if line.startswith("description:") and re.search(r"<[^>]*>", line):
+                errors.append(f"{manifest.relative_to(root)}: description must not contain <...>")
     for agent in ("verify-implementation", "research-topic"):
         path = root / "agents" / f"{agent}.md"
         if not path.is_file():
