@@ -1,0 +1,17 @@
+{
+  "name": "sdd-workflow",
+  "description": "Spec-driven development workflow: kick off a spec, break it into GitHub issues, implement, review, merge, and run project meetings.",
+  "keywords": [
+    "workflow",
+    "spec-driven-development",
+    "github",
+    "issues",
+    "pull-requests"
+  ],
+  "skills": "./skills",
+  "interface": {
+    "displayName": "SDD Workflow",
+    "shortDescription": "Spec-driven development workflow on GitHub.",
+    "developerName": "tarrgor"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "sdd-workflow-skills",
+  "interface": {
+    "displayName": "SDD Workflow Skills"
+  },
+  "plugins": [
+    {
+      "name": "sdd-workflow",
+      "source": {
+        "source": "local",
+        "path": "./"
+      }
+    }
+  ]
+}

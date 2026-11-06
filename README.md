@@ -95,6 +95,23 @@ To work on the skills themselves, load your clone in place, so edits apply at th
 
 **In cloud sessions** the skills use the GitHub integration instead of `gh` (see Requirements). Deleting a merged PR's remote branch may be refused there (merge-pr reports it), and `run-milestone` is unsupported.
 
+## Codex plugin (experimental)
+
+This branch adds Codex plugin packaging alongside the Claude Code plugin. It reuses all 15 skills and their bundled resources; it does not run the install scripts or register custom-agent TOMLs. Independent review and research prefer existing named agents and otherwise use fresh generic subagents, with the limitations documented in `skills/_shared/runtime-adapters.md`.
+
+On a Codex CLI that supports `codex plugin` (command syntax checked with 0.167.0-alpha.4), test this checkout:
+
+```bash
+codex plugin marketplace add /absolute/path/to/sdd-workflow-skills
+codex plugin add sdd-workflow@sdd-workflow-skills
+```
+
+Start a new task and verify skill discovery and resource access. Installation copies the plugin into Codex's cache; treat it as a snapshot, not a live link to this checkout. See [the investigation and acceptance checklist](docs/codex-plugin-investigation.md) before replacing a working manual installation. Older clients without plugin commands can keep using the installers below.
+
+After validating the plugin, use the original installer's uninstall option to remove this repository's managed manual skills and agents, then start a new task and repeat the review/research checks. Do not delete unrelated user configuration. If the plugin fails acceptance, remove it with `codex plugin remove sdd-workflow@sdd-workflow-skills` and restore the manual installation.
+
+Cloud support is **unverified**. A local plugin installation does not establish account sync or availability in cloud tasks. Each cloud host must independently expose or install the plugin, supply GitHub access, and support the capabilities a skill needs. `run-milestone` still requires its documented desktop chat tools.
+
 ## Install for Codex on native Windows
 
 Use PowerShell from the repository root:
@@ -128,14 +145,14 @@ This links skills into `~/.agents/skills` and copies Codex custom agents into `~
 | Capability | Claude Code | Codex |
 |---|---|---|
 | Shared skills and `.project/` workflow | Full | Full |
-| Independent implementation review | Claude subagent manifest | Codex read-only custom agent |
-| Parallel topic research | Web-only Claude subagents | Read-only Codex custom agents |
+| Independent implementation review | Claude subagent manifest | Read-only custom agent; plugin fallback uses a fresh generic subagent with behavioral restrictions |
+| Parallel topic research | Web-only Claude subagents | Read-only custom agents; plugin fallback uses generic subagents with behavioral restrictions |
 | Model recommendation per complexity tier | Sonnet / Opus / Fable | Terra / Sol / Astra |
 | Unattended milestone runs (`run-milestone`) | Desktop app only | Desktop with chat tools; live acceptance pending; CLI/IDE unsupported |
 | Technical prevention of local reads by research agent | Full through the manifest tool allowlist | Not equivalent; current Codex custom-agent configuration supplies a behavioral prohibition, not a web-only tool allowlist |
 | Normal Git checkout | Full | Full |
 | Existing linked worktree / detached `HEAD` | Supported | Supported, including Codex App worktrees |
-| Installation | Plugin (claude.ai account or `claude plugin install`) | `install.ps1` (Windows), `install-codex.sh` (macOS/Linux/WSL2) |
+| Installation | Plugin (claude.ai account or `claude plugin install`) | Experimental Codex plugin; manual installers remain supported |
 
 When strict technical prevention of local reads is required for research under Codex, use a separately sandboxed research service instead of the bundled Codex research custom agent.
 

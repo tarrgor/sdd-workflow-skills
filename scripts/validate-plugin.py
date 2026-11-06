@@ -1,4 +1,4 @@
-"""Check the Claude Code plugin and marketplace manifests stay consistent with the repo."""
+"""Check the Claude Code and Codex plugin manifests stay consistent with the repo."""
 
 import json
 import re
@@ -42,6 +42,28 @@ def validate(root: Path) -> list[str]:
             local = [t for t in ("Read", "Grep", "Glob", "Bash", "Write", "Edit") if t in tools.split(":", 1)[-1].replace(",", " ").split()]
             if local:
                 errors.append(f"agents/research-topic.md must stay web-only; remove {', '.join(local)}")
+    try:
+        codex = json.loads((root / ".codex-plugin/plugin.json").read_text(encoding="utf-8"))
+        codex_market = json.loads((root / ".agents/plugins/marketplace.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        errors.append(f"Unreadable Codex plugin manifest: {exc}")
+        return errors
+    if codex.get("name") != plugin.get("name"):
+        errors.append("Codex and Claude plugin names must match")
+    if codex.get("skills") != "./skills":
+        errors.append("Codex plugin must load the shared ./skills directory")
+    if "agents" in codex:
+        errors.append("Codex plugin must not claim custom-agent registration via an agents field")
+    expected_entry = {"name": codex.get("name"), "source": {"source": "local", "path": "./"}}
+    if codex_market.get("name") != market.get("name") or codex_market.get("plugins") != [expected_entry]:
+        errors.append("Codex marketplace must expose the repository root under the shared plugin/marketplace names")
+    skills = list(root.glob("skills/*/SKILL.md"))
+    if not skills:
+        errors.append("Codex plugin has no bundled skills")
+    for resource in ("skills/_shared/runtime-adapters.md", "skills/_shared/scripts/status-page.py",
+                     "skills/_shared/status-template.html", "skills/run-milestone/references/codex-desktop.md"):
+        if not (root / resource).is_file():
+            errors.append(f"Missing bundled plugin resource: {resource}")
     return errors
 
 
