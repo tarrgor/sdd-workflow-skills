@@ -106,6 +106,14 @@ codex plugin marketplace add /absolute/path/to/sdd-workflow-skills
 codex plugin add sdd-workflow@sdd-workflow-skills
 ```
 
+For ZIP upload, build a Codex-only archive (do not upload GitHub's repository ZIP, which also contains the Claude plugin manifest):
+
+```bash
+python scripts/package-codex-plugin.py --output work/sdd-workflow-1.0.0.zip
+```
+
+The archive contains `.codex-plugin/plugin.json` directly at its root, all skills and shared resources, and the license. It excludes the Claude plugin and marketplace manifests.
+
 Start a new task and verify skill discovery and resource access. Installation copies the plugin into Codex's cache; treat it as a snapshot, not a live link to this checkout. See [the investigation and acceptance checklist](docs/codex-plugin-investigation.md) before replacing a working manual installation. Older clients without plugin commands can keep using the installers below.
 
 After validating the plugin, use the original installer's uninstall option to remove this repository's managed manual skills and agents, then start a new task and repeat the review/research checks. Do not delete unrelated user configuration. If the plugin fails acceptance, remove it with `codex plugin remove sdd-workflow@sdd-workflow-skills` and restore the manual installation.
