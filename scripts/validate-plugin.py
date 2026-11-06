@@ -55,7 +55,7 @@ def validate(root: Path) -> list[str]:
     if not isinstance(interface, dict):
         errors.append("Codex plugin interface is required")
     else:
-        for field in ("displayName", "shortDescription", "longDescription", "developerName"):
+        for field in ("displayName", "shortDescription", "longDescription", "developerName", "category"):
             value = interface.get(field)
             if not isinstance(value, str) or not value.strip():
                 errors.append(f"Codex plugin interface.{field} must be a non-empty string")
