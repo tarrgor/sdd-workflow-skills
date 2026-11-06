@@ -9,6 +9,8 @@ Reports where the project stands and recommends exactly one next action. Read-on
 
 Milestone naming, the `Status:` lifecycle, and the `Depends on #N` format are defined in `../_shared/conventions.md`; issue states, pending findings, and the next-action order in `../_shared/next-action.md` (both relative to this skill's directory).
 
+GitHub operations: `../_shared/github.md` — the `gh` commands below are the reference form.
+
 ## 1. Gather
 
 - **Active milestone**: read the `Status:` headers of `.project/SPEC-milestone-*.md` and pick the `Active` one (legacy fallback per conventions). Note any spec still `Planned`.

@@ -19,6 +19,8 @@ jobs:
         run: python scripts/validate-codex-agents.py
       - name: Preserve Claude milestone behavior
         run: python scripts/validate-run-milestone.py
+      - name: Check plugin manifests
+        run: python scripts/validate-plugin.py
       - name: Test PowerShell installer
         if: runner.os == 'Windows'
         shell: pwsh

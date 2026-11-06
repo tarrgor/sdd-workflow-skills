@@ -9,6 +9,8 @@ Brings an existing, non-compliant project into this workflow: inventories what e
 
 Slug/branch format, base branch, milestone commands, the `Status:` lifecycle, the `.project/` layout, the Knowledge rules, written-deliverable sizing, and the delegation rule are defined in `../_shared/conventions.md` (relative to this skill's directory).
 
+GitHub operations: `../_shared/github.md` — the `gh` commands below are the reference form.
+
 ## 1. Survey the current state
 
 Everything discoverable is a **fact** — never ask the user for it.

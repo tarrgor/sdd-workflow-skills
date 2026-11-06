@@ -9,6 +9,8 @@ Runs on an empty/near-empty project directory (new project) or to scope a new mi
 
 The `.project/` layout, written-deliverable sizing, and the delegation rule are defined in `../_shared/conventions.md` (relative to this skill's directory).
 
+GitHub operations: `../_shared/github.md` — the `gh` commands below are the reference form.
+
 ## 1. Set up project files
 
 - Create the `.project/` directories if missing, per the layout in `../_shared/conventions.md`.

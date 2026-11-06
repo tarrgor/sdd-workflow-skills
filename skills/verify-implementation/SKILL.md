@@ -9,6 +9,8 @@ Reviews a finished implementation against its issue — does not implement or fi
 
 Use `../_shared/runtime-adapters.md` for host-specific subagent and file-listing behavior.
 
+GitHub operations: `../_shared/github.md` — the `gh` commands below are the reference form.
+
 ## 0. Review in a fresh context
 
 The review must not run in the context that wrote the code — it needs both the independence and the context isolation.

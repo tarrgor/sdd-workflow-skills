@@ -9,6 +9,8 @@ Judges one issue's implementation complexity and names the model to implement it
 
 The host's model names per tier are defined in `../_shared/runtime-adapters.md` (relative to this skill's directory); the Knowledge consultation discipline in `../_shared/conventions.md`.
 
+GitHub operations: `../_shared/github.md` — the `gh` commands below are the reference form.
+
 ## 1. Read the issue
 
 - Identify the issue by number. If genuinely unclear, ask.

@@ -7,6 +7,8 @@ description: This skill should be used to merge an open, reviewed pull request b
 
 Merges an approved PR into its base branch and cleans up the branch — does not review or implement anything.
 
+GitHub operations: `../_shared/github.md` — the `gh` commands below are the reference form.
+
 The base branch is whatever the PR targets: `develop` where the project has one, otherwise the default branch (typically `main`). Read it off the PR (`gh pr view <number> --json baseRefName`) rather than assuming.
 
 ## 1. Identify the PR

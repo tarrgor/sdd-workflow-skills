@@ -9,6 +9,8 @@ Runs after kick-off produces a confirmed spec. Decomposes it into one issue per 
 
 Milestone naming, the `Status:` lifecycle, the `Depends on #N` format, and the Knowledge discipline are defined in `../_shared/conventions.md` (relative to this skill's directory).
 
+GitHub operations: `../_shared/github.md` — the `gh` commands below are the reference form.
+
 ## 1. Find the spec
 
 Use the highest-numbered `.project/SPEC-milestone-<###>-*.md` if any exist, else `.project/SPEC.md`. Check its `Status:` header (lifecycle per conventions):

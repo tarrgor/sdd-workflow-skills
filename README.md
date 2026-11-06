@@ -13,7 +13,7 @@ The skill takes it from there — interviewing you one question at a time and gu
 ## Requirements
 
 - **A GitHub repo.** The workflow runs on GitHub throughout — issues, pull requests, and review comments — and has no offline fallback. Issues are grouped into a GitHub milestone per spec (created via `gh api`). If the project isn't on GitHub yet, **kick-off** and **create-spec-issues** say so and offer to create the repo for you.
-- **The [GitHub CLI](https://cli.github.com) (`gh`), installed and authenticated.** Every skill drives GitHub through `gh`. Install it with `brew install gh` on macOS or `winget install --id GitHub.cli` on Windows, then run `gh auth login`; `gh auth status` should succeed before you start.
+- **GitHub access.** Locally: the [GitHub CLI](https://cli.github.com) (`gh`), installed and authenticated — `brew install gh` on macOS or `winget install --id GitHub.cli` on Windows, then `gh auth login`. Without a working `gh` (e.g. in Claude Code cloud sessions, where `gh pr`/`gh issue` are refused), the skills fall back to the host's GitHub integration (MCP tools) plus `gh api` REST calls; the mapping lives in `skills/_shared/github.md`.
 - **Python 3** — only for **project-status**, which renders `STATUS.html` with a bundled script. Without it the status report still works; the page is just skipped.
 - **A base branch for feature work.** `develop` is preferred — it keeps released code on `main` separate from work in progress — but it's optional: if the repo doesn't have one, the skills use its default branch (usually `main`) instead. Either way, feature branches are cut from the base branch and PRs target it.
 
@@ -71,6 +71,19 @@ Skills read and write project state here (created automatically on first use):
 | `Branding/BRAND.md` | Brand identity guide: palette, typography, voice & tone |
 | `Branding/Assets/` | Generated logo, icon, and marketing assets (or creative briefs) |
 | `Home.md` + `.obsidian/` | Obsidian vault: open `.project/` as a vault to browse all of the above |
+
+## Install as a Claude Code plugin
+
+The repository is a plugin (`sdd-workflow`) and its own marketplace (`sdd-workflow-skills`):
+
+```bash
+claude plugin marketplace add tarrgor/sdd-workflow-skills
+claude plugin install sdd-workflow@sdd-workflow-skills
+```
+
+Skills are then namespaced — `/sdd-workflow:kick-off`, agents `sdd-workflow:verify-implementation` — and update with the repository (no pinned `version`). Use either the plugin or the symlink installer below, not both: both would register every skill twice.
+
+**Cloud sessions (claude.ai/code).** A cloud session does not install plugins from a local `claude plugin install`, nor from `enabledPlugins` / `extraKnownMarketplaces` in a project's `.claude/settings.json`. Add the plugin to your claude.ai account instead — **Customize → Plugins**, add the marketplace `tarrgor/sdd-workflow-skills`, install `sdd-workflow`. Account plugins are synced into Claude Code sessions, including cloud sessions, at session start. There the skills use the GitHub integration instead of `gh` (see Requirements). Known cloud limits: deleting a merged PR's remote branch may be refused (merge-pr reports it), and `run-milestone` is unsupported.
 
 ## Install for Claude Code on macOS or Linux
 

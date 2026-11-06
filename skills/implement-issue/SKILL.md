@@ -11,6 +11,8 @@ Branch/slug format, base-branch rule, `Depends on #N` format, the Knowledge disc
 
 Read `../_shared/runtime-adapters.md` before branch setup or subagent invocation. Preserve the Claude Code path described there; use the Codex path only when running under Codex.
 
+GitHub operations: `../_shared/github.md` — the `gh` commands below are the reference form.
+
 ## 1. Identify the issue and check for an existing implementation
 
 - Identify the GitHub issue by number. If genuinely unclear, ask.

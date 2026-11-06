@@ -4,6 +4,8 @@ Shared rules for all skills in this workflow. Skills reference this file as `../
 
 Host-specific subagent, shell, and worktree mappings are defined in `runtime-adapters.md` beside this file. Read that file when the current step delegates work, gives an OS-specific command, or runs inside a linked worktree.
 
+GitHub operations are written as `gh` commands. Before the first one in a run, pick the access mode in `github.md` beside this file; without a working `gh`, perform each operation as mapped there.
+
 ## Branches and slugs
 
 - `<slug>` = `<issue-number>-<kebab-title>` (e.g. `12-add-login`).
@@ -62,7 +64,7 @@ Every file these skills write — `.project/Reports/`, `Inbox/findings-*`, `Know
 
 `verify-implementation` and `research-topic` are the only subagents this workflow calls for — the first for reviewer independence, the second because deep web research reads far more text than its conclusions are worth. Do the rest directly — exploring the codebase, reading issues, running builds and tests, and checking your own work are all faster as direct tool calls than as delegated agents.
 
-Invoke them using the current host mapping in `runtime-adapters.md`. Codex's research agent uses a read-only sandbox and a behavioral no-local-read rule; unlike the Claude manifest's web-only tool allowlist, this is not a technical local-read boundary. Never describe the two isolation levels as equivalent.
+Invoke them using the current host mapping in `runtime-adapters.md`. Installed as the Claude Code plugin, agent names carry the plugin prefix — `sdd-workflow:verify-implementation`, `sdd-workflow:research-topic`; use the name the host lists. Codex's research agent uses a read-only sandbox and a behavioral no-local-read rule; unlike the Claude manifest's web-only tool allowlist, this is not a technical local-read boundary. Never describe the two isolation levels as equivalent.
 
 ## Non-interactive mode
 

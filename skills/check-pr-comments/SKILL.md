@@ -9,6 +9,8 @@ Addresses review feedback on an issue that's already implemented — does not re
 
 Branch/slug format, the Knowledge discipline, written-deliverable sizing, and the delegation rule are defined in `../_shared/conventions.md` (relative to this skill's directory).
 
+GitHub operations: `../_shared/github.md` — the `gh` commands below are the reference form.
+
 ## 1. Identify the issue and its branch
 
 - Accept an issue number or a PR number. If genuinely unclear, ask.
