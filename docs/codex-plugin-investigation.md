@@ -37,3 +37,18 @@ Cloud hosts may deliver skills through resource APIs rather than local paths. A 
 ## Verification in this branch
 
 Manifest/resource validation is automated by `scripts/validate-plugin.py` in the existing compatibility workflow. CLI command help was checked. No plugin was installed into the current user's configuration, and no live skill invocation, custom-agent fallback, account sync, or cloud installation has been verified yet.
+
+## Upload-dialog requirements and official examples
+
+The local CLI parser is permissive and is not the upload dialog's validator. Upload attempts confirmed required `version`, `author`, `interface.longDescription`, and a string-list `interface.capabilities`. The dialog also rejected missing/empty category handling, so this package supplies an explicit category. Passing the CLI parser alone cannot establish upload acceptance.
+
+A broader reference is OpenAI's [plugin field guide](https://github.com/openai/plugins/blob/b767f8fa3be1a22b093127dd59956c91ecffca9d/.agents/skills/plugin-creator/references/plugin-json-spec.md) and [canonical scaffold](https://github.com/openai/plugins/blob/b767f8fa3be1a22b093127dd59956c91ecffca9d/.agents/skills/plugin-creator/scripts/create_basic_plugin.py), inspected 2026-11-06. These document:
+
+- Publisher metadata: `name`, `version`, `description`, `author` (name, optional real contact/profile details), `homepage`, `repository`, `license`, and string-list `keywords`.
+- UI metadata: `displayName`, `shortDescription`, `longDescription`, `developerName`, category, capabilities, website and optional policy URLs, starter prompts, branding assets, and screenshots.
+- Starter prompts: at most three strings, each at most 128 characters. Screenshots: bundled PNGs under `./assets/`. Component/asset paths begin with `./` and resolve within the package. Declare hooks, MCP servers, or apps only when the matching configuration exists.
+- Marketplace entries: source, installation/authentication policy, and category. Our existing repository-root package keeps source path `./`; the scaffold's `./plugins/<name>` convention applies to its multi-plugin layout.
+
+The manifest now includes the real GitHub author/profile and repository, MIT license, website, starter prompts, meaningful capabilities, and an empty screenshot list. It omits unprovided contact email, privacy/terms URLs, and unused branding/component paths rather than inventing them. The canonical scaffold is a field reference, not an executable strict schema; it does not establish which optional fields this particular importer requires. The exact upload validator remains unavailable in the inspected public sources. Final acceptance still requires an upload in the user's client.
+
+The validator intentionally enforces this repository's populated metadata profile, checks collection types and bundled asset paths, and includes regression cases for the upload errors observed so far. It is not claimed to be the importer's official schema.

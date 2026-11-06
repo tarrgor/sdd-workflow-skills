@@ -48,6 +48,19 @@ def validate(root: Path) -> list[str]:
     except (OSError, ValueError) as exc:
         errors.append(f"Unreadable Codex plugin manifest: {exc}")
         return errors
+    for field in ("name", "description", "homepage", "repository", "license"):
+        value = codex.get(field)
+        if not isinstance(value, str) or not value.strip():
+            errors.append(f"Codex plugin {field} must be a non-empty string")
+    if not isinstance(codex.get("name"), str) or not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", codex["name"]) or len(codex["name"]) > 64:
+        errors.append("Codex plugin name must use lowercase hyphen-case, at most 64 characters")
+    author = codex.get("author")
+    if not isinstance(author, dict) or not isinstance(author.get("name"), str) or not author["name"].strip():
+        errors.append("Codex plugin author.name is required")
+    for field in ("keywords",):
+        value = codex.get(field)
+        if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
+            errors.append(f"Codex plugin {field} must be a list of strings")
     version = codex.get("version")
     if not isinstance(version, str) or not re.fullmatch(r"(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)", version):
         errors.append("Codex plugin version is required and must use major.minor.patch")
@@ -62,13 +75,31 @@ def validate(root: Path) -> list[str]:
             value = interface.get(field)
             if not isinstance(value, str) or not value.strip():
                 errors.append(f"Codex plugin interface.{field} must be a non-empty string")
+        for field in ("defaultPrompt", "screenshots"):
+            value = interface.get(field)
+            if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
+                errors.append(f"Codex plugin interface.{field} must be a list of strings")
+        prompts = interface.get("defaultPrompt", [])
+        if isinstance(prompts, list) and (len(prompts) > 3 or any(isinstance(p, str) and len(p) > 128 for p in prompts)):
+            errors.append("Codex defaultPrompt supports at most 3 strings of at most 128 characters")
+        for field in ("composerIcon", "logo", "logoDark"):
+            value = interface.get(field)
+            if value is not None and (not isinstance(value, str) or not value.startswith("./") or ".." in Path(value).parts or not (root / value).is_file()):
+                errors.append(f"Codex interface.{field} must reference a bundled file under ./")
+        screenshots = interface.get("screenshots", [])
+        if isinstance(screenshots, list):
+            for value in screenshots:
+                if not isinstance(value, str) or not value.startswith("./assets/") or ".." in Path(value).parts or not value.endswith(".png") or not (root / value).is_file():
+                    errors.append("Codex screenshots must reference bundled PNG files under ./assets/")
     if codex.get("name") != plugin.get("name"):
         errors.append("Codex and Claude plugin names must match")
     if codex.get("skills") != "./skills":
         errors.append("Codex plugin must load the shared ./skills directory")
     if "agents" in codex:
         errors.append("Codex plugin must not claim custom-agent registration via an agents field")
-    expected_entry = {"name": codex.get("name"), "source": {"source": "local", "path": "./"}}
+    expected_entry = {"name": codex.get("name"), "source": {"source": "local", "path": "./"},
+                      "policy": {"installation": "AVAILABLE", "authentication": "ON_INSTALL"},
+                      "category": "Developer Tools"}
     if codex_market.get("name") != market.get("name") or codex_market.get("plugins") != [expected_entry]:
         errors.append("Codex marketplace must expose the repository root under the shared plugin/marketplace names")
     skills = list(root.glob("skills/*/SKILL.md"))

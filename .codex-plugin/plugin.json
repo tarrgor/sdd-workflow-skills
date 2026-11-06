@@ -15,7 +15,25 @@
     "shortDescription": "Spec-driven development workflow on GitHub.",
     "developerName": "tarrgor",
     "longDescription": "A spec-driven development workflow for GitHub projects: turn ideas into specifications and milestone issues, implement and independently review changes, address feedback, merge pull requests, and capture project decisions and research.",
-    "category": "Other",
-    "capabilities": []
-  }
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/tarrgor/sdd-workflow-skills",
+    "defaultPrompt": [
+      "Kick off a spec-driven project.",
+      "Show project status and the next action.",
+      "Review a pull request against its issue."
+    ],
+    "screenshots": []
+  },
+  "author": {
+    "name": "tarrgor",
+    "url": "https://github.com/tarrgor"
+  },
+  "homepage": "https://github.com/tarrgor/sdd-workflow-skills",
+  "repository": "https://github.com/tarrgor/sdd-workflow-skills",
+  "license": "MIT"
 }

@@ -19,6 +19,8 @@ jobs:
         run: python scripts/validate-codex-agents.py
       - name: Check plugin manifests
         run: python scripts/validate-plugin.py
+      - name: Test Codex upload metadata validation
+        run: python tests/test-plugin-validation.py
       - name: Validate Claude Code plugin
         if: runner.os == 'Linux'
         run: npx --yes @anthropic-ai/claude-code plugin validate .
