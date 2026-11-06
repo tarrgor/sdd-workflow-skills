@@ -12,13 +12,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - name: Validate skills and compatibility contracts
+      - name: Validate skill structure
         shell: pwsh
         run: ./scripts/validate.ps1
       - name: Parse Codex custom-agent TOML
         run: python scripts/validate-codex-agents.py
-      - name: Preserve Claude milestone behavior
-        run: python scripts/validate-run-milestone.py
+      - name: Check plugin manifests
+        run: python scripts/validate-plugin.py
+      - name: Validate Claude Code plugin
+        if: runner.os == 'Linux'
+        run: npx --yes @anthropic-ai/claude-code plugin validate .
       - name: Test PowerShell installer
         if: runner.os == 'Windows'
         shell: pwsh
@@ -30,4 +33,4 @@ jobs:
       - name: Lint POSIX installers
         if: runner.os == 'Linux'
         shell: bash
-        run: shellcheck install.sh install-codex.sh tests/test-install-sh.sh
+        run: shellcheck install-codex.sh tests/test-install-sh.sh

@@ -1,6 +1,6 @@
 ---
 name: create-obsidian-vault
-description: Makes the project's `.project/` folder browsable as an Obsidian vault, and refreshes the vault's Home index after the documentation changed. User-invoked only — run it with `/create-obsidian-vault`.
+description: Makes the project's `.project/` folder browsable as an Obsidian vault, and refreshes the vault's Home index after the documentation changed. User-invoked only — run it with `/sdd-workflow:create-obsidian-vault`.
 disable-model-invocation: true
 ---
 

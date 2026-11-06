@@ -1,6 +1,6 @@
 ---
 name: verify-implementation
-description: This skill should be used to review a pull request produced by implement-issue. Trigger phrases include "review this PR", "verify the implementation", "check PR #12", "review issue #12's implementation", or whenever a finished implementation needs an independent review before merge.
+description: This skill should be used to review a pull request produced by implement-issue. Trigger phrases include "review this PR", "verify the implementation", "check PR 12", "review issue 12's implementation", or whenever a finished implementation needs an independent review before merge.
 ---
 
 # Verify Implementation
@@ -9,12 +9,14 @@ Reviews a finished implementation against its issue — does not implement or fi
 
 Use `../_shared/runtime-adapters.md` for host-specific subagent and file-listing behavior.
 
+GitHub operations: `../_shared/github.md` — the `gh` commands below are the reference form.
+
 ## 0. Review in a fresh context
 
 The review must not run in the context that wrote the code — it needs both the independence and the context isolation.
 
-- **Already running as the `verify-implementation` agent** (the subagent preloads this skill), or no review agent is installed for this host: do the review here, starting at Step 1. Installed means the `verify-implementation` subagent under Claude Code (`agents/verify-implementation.md`) and the `verify-implementation` custom agent under Codex (`agents/codex/verify-implementation.toml`, linked into the host's agents directory) — never check for the other host's file.
-- **Otherwise** — invoked directly by the user, or from another skill: delegate to the named review agent using the current host mapping. Under Claude Code, use the Agent tool with `subagent_type: verify-implementation`. Under Codex, spawn the installed `verify-implementation` custom agent. Pass the issue and PR numbers, wait for its final result, then report its findings per Step 4. Do not read the diff yourself first.
+- **Already running as the `verify-implementation` agent** (the subagent preloads this skill), or no review agent is installed for this host: do the review here, starting at Step 1. Installed means the `sdd-workflow:verify-implementation` subagent under Claude Code (the plugin's `agents/verify-implementation.md`) and the `verify-implementation` custom agent under Codex (`agents/codex/verify-implementation.toml`, linked into the host's agents directory) — never check for the other host's file.
+- **Otherwise** — invoked directly by the user, or from another skill: delegate to the named review agent using the current host mapping. Under Claude Code, use the Agent tool with `subagent_type: sdd-workflow:verify-implementation`. Under Codex, spawn the installed `verify-implementation` custom agent. Pass the issue and PR numbers, wait for its final result, then report its findings per Step 4. Do not read the diff yourself first.
 
 ## 1. Identify the issue and its PR
 

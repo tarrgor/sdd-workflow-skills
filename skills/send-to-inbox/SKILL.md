@@ -1,6 +1,6 @@
 ---
 name: send-to-inbox
-description: This skill should be used to drop a requirement, idea, or observation into the `.project/Inbox/` of another workflow project, from whatever directory the session runs in. Trigger phrases include "put this in the inbox of <project>", "send this to <project>'s inbox", "note this for <project>", "file this as a finding in <project>", "<project> needs to know that…". Writes one findings file into the target project; never touches the current project, code, issues, or specs.
+description: This skill should be used to drop a requirement, idea, or observation into the `.project/Inbox/` of another workflow project, from whatever directory the session runs in. Trigger phrases include "put this in the inbox of PROJECT", "send this to PROJECT's inbox", "note this for PROJECT", "file this as a finding in PROJECT", "PROJECT needs to know that…". Writes one findings file into the target project; never touches the current project, code, issues, or specs.
 ---
 
 # Send to Inbox

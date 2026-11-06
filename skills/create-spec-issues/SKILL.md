@@ -1,6 +1,6 @@
 ---
 name: create-spec-issues
-description: This skill should be used after a kick-off interview has produced a confirmed spec (`.project/SPEC.md` for a new project, or a new `.project/SPEC-milestone-<###>-<slug>.md` for a milestone) and that spec's work needs to be broken into actionable issues. Trigger phrases include "create issues from this spec", "break this spec into tickets", "turn the spec into issues", "spec this out into work items", or whenever a freshly confirmed spec needs to be decomposed into implementable units of work.
+description: This skill should be used after a kick-off interview has produced a confirmed spec (`.project/SPEC.md` for a new project, or a new `.project/SPEC-milestone-NNN-SLUG.md` for a milestone) and that spec's work needs to be broken into actionable issues. Trigger phrases include "create issues from this spec", "break this spec into tickets", "turn the spec into issues", "spec this out into work items", or whenever a freshly confirmed spec needs to be decomposed into implementable units of work.
 ---
 
 # Create Spec Issues
@@ -8,6 +8,8 @@ description: This skill should be used after a kick-off interview has produced a
 Runs after kick-off produces a confirmed spec. Decomposes it into one issue per unit of work, grouped under a GitHub milestone — does not implement anything.
 
 Milestone naming, the `Status:` lifecycle, the `Depends on #N` format, and the Knowledge discipline are defined in `../_shared/conventions.md` (relative to this skill's directory).
+
+GitHub operations: `../_shared/github.md` — the `gh` commands below are the reference form.
 
 ## 1. Find the spec
 

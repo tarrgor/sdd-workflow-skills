@@ -9,6 +9,8 @@ Brings an existing, non-compliant project into this workflow: inventories what e
 
 Slug/branch format, base branch, milestone commands, the `Status:` lifecycle, the `.project/` layout, the Knowledge rules, written-deliverable sizing, and the delegation rule are defined in `../_shared/conventions.md` (relative to this skill's directory).
 
+GitHub operations: `../_shared/github.md` — the `gh` commands below are the reference form.
+
 ## 1. Survey the current state
 
 Everything discoverable is a **fact** — never ask the user for it.
@@ -63,4 +65,4 @@ Migrate only the missing/non-compliant items from Step 1's diagnosis:
 
 ## 7. Report and suggest the next step
 
-Summarize compliance: what was migrated, what was already compliant, what gaps remain. If `.project/.obsidian/` does not exist, add a one-line hint that the user can run `/create-obsidian-vault` to browse the migrated docs in Obsidian — never run it yourself, it is user-invoked only. Then name the next step, first match wins: vision or milestone-scope gaps → `kick-off`; a `Planned` spec → `create-spec-issues`; otherwise → `project-status`.
+Summarize compliance: what was migrated, what was already compliant, what gaps remain. If `.project/.obsidian/` does not exist, add a one-line hint that the user can run `/sdd-workflow:create-obsidian-vault` to browse the migrated docs in Obsidian — never run it yourself, it is user-invoked only. Then name the next step, first match wins: vision or milestone-scope gaps → `kick-off`; a `Planned` spec → `create-spec-issues`; otherwise → `project-status`.

@@ -1,6 +1,6 @@
 ---
 name: verify-implementation
-description: Independently reviews a finished implementation — a PR produced by implement-issue — against its issue's acceptance criteria, for correctness and for security. Use for "review this PR", "verify the implementation", "check PR #12", "review issue #12's implementation", or whenever a finished implementation needs review before merge. Reviews only; never implements or fixes.
+description: Independently reviews a finished implementation — a PR produced by implement-issue — against its issue's acceptance criteria, for correctness and for security. Use for "review this PR", "verify the implementation", "check PR 12", "review issue 12's implementation", or whenever a finished implementation needs review before merge. Reviews only; never implements or fixes.
 tools: Read, Grep, Glob, Bash, Write
 skills:
   - verify-implementation

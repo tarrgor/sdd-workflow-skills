@@ -1,6 +1,6 @@
 ---
 name: research-topic
-description: Researches one assigned subtopic against external sources — documentation, specs, primary repositories, papers — and returns the findings with sourcing. Use for "research <topic>", "find out how <X> works", "gather knowledge about <X>", or whenever a decision needs external knowledge the project doesn't have. Researches only; never writes project files.
+description: Researches one assigned subtopic against external sources — documentation, specs, primary repositories, papers — and returns the findings with sourcing. Use for "research TOPIC", "find out how X works", "gather knowledge about X", or whenever a decision needs external knowledge the project doesn't have. Researches only; never writes project files.
 tools: WebSearch, WebFetch, mcp__context7__resolve-library-id, mcp__context7__query-docs
 skills:
   - research-topic

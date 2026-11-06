@@ -1,11 +1,13 @@
 ---
 name: merge-pr
-description: This skill should be used to merge an open, reviewed pull request back into its base branch, identified by its issue number or PR number. Trigger phrases include "merge PR #12", "merge this PR", "merge issue #12", "land this branch", or whenever an approved implementation is ready to merge.
+description: This skill should be used to merge an open, reviewed pull request back into its base branch, identified by its issue number or PR number. Trigger phrases include "merge PR 12", "merge this PR", "merge issue 12", "land this branch", or whenever an approved implementation is ready to merge.
 ---
 
 # Merge PR
 
 Merges an approved PR into its base branch and cleans up the branch — does not review or implement anything.
+
+GitHub operations: `../_shared/github.md` — the `gh` commands below are the reference form.
 
 The base branch is whatever the PR targets: `develop` where the project has one, otherwise the default branch (typically `main`). Read it off the PR (`gh pr view <number> --json baseRefName`) rather than assuming.
 

@@ -4,7 +4,7 @@ Use the current host's native capabilities. These mappings change invocation and
 
 ## Subagents
 
-- **Claude Code:** use the `Agent` tool with the requested `subagent_type`. Subagents run in the background and notify the caller when they finish; wait for that result before any step that depends on it, exactly as the calling skill specifies.
+- **Claude Code:** use the `Agent` tool with the requested `subagent_type`, which carries the plugin prefix (`sdd-workflow:<agent>`). Subagents run in the background and notify the caller when they finish; wait for that result before any step that depends on it, exactly as the calling skill specifies.
 - **Codex:** spawn the matching custom agent with the collaboration/subagent capability, explicitly tell it to use the corresponding `$verify-implementation` or `$research-topic` skill, pass the complete brief, and wait for its final result before continuing. The Codex custom agents are named `verify-implementation` and `research-topic` — the same names Claude Code uses; their source files live in `agents/codex/`.
 - If the named agent is unavailable, follow the fallback in the calling skill. Never claim independent review or isolated context when the work ran in the caller.
 
@@ -30,9 +30,7 @@ Name the recommendation and let the user act on it.
 `run-milestone` starts each issue as a unit of work: isolated in its own worktree, with its own model, reporting back when done.
 
 - **Claude Code desktop app:** the session-start tool (`start_session`) with `initiation: "user_asked"`, `context: "fresh"`, `use_worktree: true`, `source_branch: <base>`, a `model` and `effort` per tier, and a brief plus `background`. The app continues the coordinator when a started session ends its turn. A session can't run on a larger model or a higher effort than the coordinator's own; a tier above it runs at the coordinator's level. Started sessions inherit the coordinator's permission mode. A follow-up goes to the same session by its id (`SendMessage`); a session is stopped with the session-stop tool.
-<!-- codex-run-milestone:start -->
 - **Codex desktop with chat tools:** use the Codex-only adapter in `skills/run-milestone/references/codex-desktop.md` (resolve from the installed `run-milestone` skill). It maps units to explicitly requested, user-visible chats in separate worktrees using `create_thread`, `wait_threads`, `read_thread` and `send_message_to_thread`. Read it only for a Codex `run-milestone` run; it does not change standalone skills or Claude Code sessions.
-<!-- codex-run-milestone:end -->
 
 - **Any other host:** unsupported — `run-milestone` says so and stops.
 
@@ -57,6 +55,6 @@ Determine whether the current checkout is linked by comparing `git rev-parse --g
 
 ## Skill invocation labels
 
-- Claude Code may expose skills as slash commands.
+- Claude Code exposes the plugin's skills as `/sdd-workflow:<skill>`.
 - Codex CLI and IDE support `$skill-name`; the ChatGPT desktop app exposes installed skills in its Skills UI.
 - In user-facing guidance, name the skill itself unless the host-specific invocation syntax is known.

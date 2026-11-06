@@ -4,16 +4,16 @@ A set of AI coding agent skills that implement a **spec-driven development** wor
 
 ## Try it yourself
 
-1. [Install](#install-for-claude-code-on-macos-or-linux) sdd-workflow-skills.
+1. [Install](#install-for-claude-code) the `sdd-workflow` plugin (Codex: see [Install for Codex](#install-for-codex-on-native-windows)).
 2. Create an empty directory for your project and start an agent session in it.
-3. Run `/kick-off` and give it your project idea.
+3. Run `/sdd-workflow:kick-off` (Codex: `$kick-off`) and give it your project idea.
 
 The skill takes it from there — interviewing you one question at a time and guiding you through the rest of the workflow.
 
 ## Requirements
 
 - **A GitHub repo.** The workflow runs on GitHub throughout — issues, pull requests, and review comments — and has no offline fallback. Issues are grouped into a GitHub milestone per spec (created via `gh api`). If the project isn't on GitHub yet, **kick-off** and **create-spec-issues** say so and offer to create the repo for you.
-- **The [GitHub CLI](https://cli.github.com) (`gh`), installed and authenticated.** Every skill drives GitHub through `gh`. Install it with `brew install gh` on macOS or `winget install --id GitHub.cli` on Windows, then run `gh auth login`; `gh auth status` should succeed before you start.
+- **GitHub access.** Locally: the [GitHub CLI](https://cli.github.com) (`gh`), installed and authenticated — `brew install gh` on macOS or `winget install --id GitHub.cli` on Windows, then `gh auth login`. Without a working `gh` (e.g. in Claude Code cloud sessions, where `gh pr`/`gh issue` are refused), the skills fall back to the host's GitHub integration (MCP tools) plus `gh api` REST calls; the mapping lives in `skills/_shared/github.md`.
 - **Python 3** — only for **project-status**, which renders `STATUS.html` with a bundled script. Without it the status report still works; the page is just skipped.
 - **A base branch for feature work.** `develop` is preferred — it keeps released code on `main` separate from work in progress — but it's optional: if the repo doesn't have one, the skills use its default branch (usually `main`) instead. Either way, feature branches are cut from the base branch and PRs target it.
 
@@ -72,26 +72,28 @@ Skills read and write project state here (created automatically on first use):
 | `Branding/Assets/` | Generated logo, icon, and marketing assets (or creative briefs) |
 | `Home.md` + `.obsidian/` | Obsidian vault: open `.project/` as a vault to browse all of the above |
 
-## Install for Claude Code on macOS or Linux
+## Install for Claude Code
 
-The original installer and its default behavior are retained for Claude Code:
+The repository is a Claude Code plugin (`sdd-workflow`) and its own marketplace (`sdd-workflow-skills`). Install it once — either way below — and it works locally and in cloud sessions alike.
+
+**Through your claude.ai account (recommended).** In claude.ai, open **Customize → Plugins**, add the marketplace `tarrgor/sdd-workflow-skills`, and install `sdd-workflow`. Claude Code syncs account plugins at session start: into cloud sessions (claude.ai/code), and into terminal sessions signed in with your claude.ai account (Claude Code v2.1.273 or later).
+
+**Locally only:**
 
 ```bash
-./install.sh              # create the symlinks
-./install.sh --dry-run    # show what would happen, change nothing
-./install.sh --force      # also replace symlinks that point elsewhere
+claude plugin marketplace add tarrgor/sdd-workflow-skills
+claude plugin install sdd-workflow@sdd-workflow-skills
 ```
 
-| Source | Symlinked into |
-|---|---|
-| `skills/<name>/` | `~/.claude/skills`, `~/.agents/skills` |
-| `agents/<name>.md` | `~/.claude/agents` |
+Don't do both: the local install then takes precedence and the synced copy is skipped. A cloud session never loads a plugin installed only locally, nor one declared under `enabledPlugins` / `extraKnownMarketplaces` in a project's `.claude/settings.json`.
 
-`skills/_shared/` is linked alongside the skills — it's not a skill itself, but the conventions file the skills reference as a sibling directory.
+Skills and agents carry the plugin prefix: `/sdd-workflow:kick-off`, `sdd-workflow:verify-implementation`. Plain-language requests ("implement issue #12") work without it. The plugin follows the repository's commits (no pinned `version`); a local install updates with `claude plugin update sdd-workflow@sdd-workflow-skills`, or automatically once auto-update is on for the marketplace in `/plugin`.
 
-Existing symlinks that point somewhere else are skipped unless you pass `--force`, and real files or directories are never overwritten. If you'd rather not symlink, copy the `skills/<name>/` folders and `agents/<name>.md` files into your agent's skills and subagent directories by hand.
+To work on the skills themselves, load your clone in place, so edits apply at the next session start: `claude plugin marketplace add /path/to/sdd-workflow-skills`, or `claude --plugin-dir /path/to/sdd-workflow-skills` for one session.
 
-The existing Claude agent manifests remain at `agents/*.md`; their frontmatter, tool restrictions, and install destinations are unchanged.
+**Migrating from the former symlink install:** remove the old links from `~/.claude/skills` and `~/.claude/agents`, otherwise every skill is registered twice. Links in `~/.agents/skills` belong to the Codex install; remove them only if you don't use Codex.
+
+**In cloud sessions** the skills use the GitHub integration instead of `gh` (see Requirements). Deleting a merged PR's remote branch may be refused there (merge-pr reports it), and `run-milestone` is unsupported.
 
 ## Install for Codex on native Windows
 
@@ -102,12 +104,9 @@ Use PowerShell from the repository root:
 .\install.ps1 -DryRun                 # inspect without changing files
 .\install.ps1 -Force                  # replace only links that point elsewhere
 .\install.ps1 -Uninstall              # remove only this repo's managed items
-.\install.ps1 -Target All             # Codex and Claude Code
 ```
 
 The installer creates directory junctions from `skills/<name>/` into `%USERPROFILE%\.agents\skills`, so skill edits remain live without requiring symbolic-link privileges. Codex custom-agent TOMLs are copied into `%USERPROFILE%\.codex\agents`; only files carrying the sdd-workflow-skills managed header are updated or removed. Existing user files and real skill directories are never overwritten, including with `-Force`.
-
-`-Target Claude` additionally links skills into `%USERPROFILE%\.claude\skills` and Claude agent manifests into `%USERPROFILE%\.claude\agents`. Creating file symlinks requires Windows Developer Mode or an elevated PowerShell session. This PowerShell path is additive; the legacy `install.sh` contract remains the Claude baseline.
 
 After installation, start a new Codex task if the skills or custom agents do not appear immediately. Keep the Windows sandbox enabled. Git and `gh` must be installed natively when the Codex agent runs in PowerShell.
 
@@ -136,7 +135,7 @@ This links skills into `~/.agents/skills` and copies Codex custom agents into `~
 | Technical prevention of local reads by research agent | Full through the manifest tool allowlist | Not equivalent; current Codex custom-agent configuration supplies a behavioral prohibition, not a web-only tool allowlist |
 | Normal Git checkout | Full | Full |
 | Existing linked worktree / detached `HEAD` | Supported | Supported, including Codex App worktrees |
-| Native Windows installation | PowerShell `-Target Claude` | PowerShell default |
+| Installation | Plugin (claude.ai account or `claude plugin install`) | `install.ps1` (Windows), `install-codex.sh` (macOS/Linux/WSL2) |
 
 When strict technical prevention of local reads is required for research under Codex, use a separately sandboxed research service instead of the bundled Codex research custom agent.
 
@@ -144,7 +143,7 @@ Before a release, run the native app checks in [docs/codex-windows-acceptance.md
 
 ## Use the workflow
 
-Once installed, tell your agent what you want in plain language — e.g. *"kick off this project"*, *"implement issue #12"*, *"let's have a project meeting"*. Codex CLI and IDE also support `$skill-name`; the desktop app exposes installed skills in its Skills UI. Claude Code can keep using its existing slash-command flow.
+Once installed, tell your agent what you want in plain language — e.g. *"kick off this project"*, *"implement issue #12"*, *"let's have a project meeting"*. Codex CLI and IDE also support `$skill-name`; the desktop app exposes installed skills in its Skills UI. In Claude Code, skills are also available as `/sdd-workflow:<skill>`.
 
 ### Run a milestone in Codex desktop
 
@@ -156,7 +155,7 @@ The coordinator confirms only missing policy values or authorizations and record
 
 The [Codex adapter](skills/run-milestone/references/codex-desktop.md) journals chat identities and attempts in `codex-run:` issue comments, counts feedback chats toward the same concurrency limit, and binds merge receipts to the reviewed commit. Permission prompts or uncertain chat state pause dispatch; re-invoking the skill reconciles recorded chats before starting more work. It does not promise an unattended restart after the coordinator ends, and leaves worktrees available for inspection.
 
-Complete the [Codex milestone acceptance scenarios](docs/codex-run-milestone-acceptance.md) with one worker before raising parallelism. The Claude session mapping and loop are unchanged; the compatibility validator checks their baseline.
+Complete the [Codex milestone acceptance scenarios](docs/codex-run-milestone-acceptance.md) with one worker before raising parallelism.
 
 ## License
 

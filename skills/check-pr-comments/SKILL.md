@@ -1,6 +1,6 @@
 ---
 name: check-pr-comments
-description: This skill should be used to triage and address review feedback on an issue that already has an open PR. Trigger phrases include "check the PR comments", "address the review feedback", "handle the comments on PR #12", "respond to review comments", or whenever an already-implemented issue has feedback waiting. Run by the user or by `run-milestone` — never triggered automatically by implement-issue, which handles its own verify-implementation findings directly. Use this for feedback already sitting on a PR from other sources (e.g. a human reviewer).
+description: This skill should be used to triage and address review feedback on an issue that already has an open PR. Trigger phrases include "check the PR comments", "address the review feedback", "handle the comments on PR 12", "respond to review comments", or whenever an already-implemented issue has feedback waiting. Run by the user or by `run-milestone` — never triggered automatically by implement-issue, which handles its own verify-implementation findings directly. Use this for feedback already sitting on a PR from other sources (e.g. a human reviewer).
 ---
 
 # Check PR Comments
@@ -8,6 +8,8 @@ description: This skill should be used to triage and address review feedback on 
 Addresses review feedback on an issue that's already implemented — does not re-implement or create a new branch/PR. When the brief says `mode: non-interactive`, apply the non-interactive rules from the conventions wherever this skill would stop for the user.
 
 Branch/slug format, the Knowledge discipline, written-deliverable sizing, and the delegation rule are defined in `../_shared/conventions.md` (relative to this skill's directory).
+
+GitHub operations: `../_shared/github.md` — the `gh` commands below are the reference form.
 
 ## 1. Identify the issue and its branch
 

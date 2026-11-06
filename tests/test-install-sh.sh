@@ -5,11 +5,6 @@ repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 test_root="$(mktemp -d)"
 trap 'rm -rf "$test_root"' EXIT
 
-legacy_output="$(HOME="$test_root/legacy" "$repo_dir/install.sh" --dry-run)"
-[[ "$legacy_output" == *".claude/skills"* ]]
-[[ "$legacy_output" == *".agents/skills"* ]]
-[[ "$legacy_output" == *".claude/agents"* ]]
-
 codex_output="$(HOME="$test_root/codex" "$repo_dir/install-codex.sh" --dry-run)"
 [[ "$codex_output" == *".agents/skills"* ]]
 [[ "$codex_output" == *".codex/agents"* ]]

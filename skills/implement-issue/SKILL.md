@@ -1,6 +1,6 @@
 ---
 name: implement-issue
-description: This skill should be used to implement a single GitHub issue from a fresh, unimplemented state. Trigger phrases include "implement issue #12", "work on this ticket", "fix issue X", "resolve this issue", or whenever the user wants the full issue-to-PR workflow. If the issue already has a branch/PR, use check-pr-comments instead.
+description: This skill should be used to implement a single GitHub issue from a fresh, unimplemented state. Trigger phrases include "implement issue 12", "work on this ticket", "fix issue X", "resolve this issue", or whenever the user wants the full issue-to-PR workflow. If the issue already has a branch/PR, use check-pr-comments instead.
 ---
 
 # Implement Issue
@@ -10,6 +10,8 @@ Follow this workflow end to end. Keep the user informed at important transitions
 Branch/slug format, base-branch rule, `Depends on #N` format, the Knowledge discipline, written-deliverable sizing, and the delegation rule are defined in `../_shared/conventions.md` (relative to this skill's directory).
 
 Read `../_shared/runtime-adapters.md` before branch setup or subagent invocation. Preserve the Claude Code path described there; use the Codex path only when running under Codex.
+
+GitHub operations: `../_shared/github.md` — the `gh` commands below are the reference form.
 
 ## 1. Identify the issue and check for an existing implementation
 
@@ -77,7 +79,7 @@ Write `.project/Reports/<slug>.md` — a short report of what was implemented an
 
 Skip this step and Step 10 for a code-free change (Step 5) and go straight to Step 11.
 
-- Launch the `verify-implementation` agent as a subagent so it reviews with its own fresh context. Give it the issue number and PR number. Under Claude Code, use the Agent tool with `subagent_type: verify-implementation`. Under Codex, spawn the installed `verify-implementation` custom agent using the mapping in `runtime-adapters.md`.
+- Launch the `verify-implementation` agent as a subagent so it reviews with its own fresh context. Give it the issue number and PR number. Under Claude Code, use the Agent tool with `subagent_type: sdd-workflow:verify-implementation`. Under Codex, spawn the installed `verify-implementation` custom agent using the mapping in `runtime-adapters.md`.
 - Wait for it to finish — do not proceed, merge, or report done while it is running. It returns its findings directly in its final message; it does not post to the PR.
 
 ## 10. Address the review findings

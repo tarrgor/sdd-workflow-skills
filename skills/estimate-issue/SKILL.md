@@ -1,6 +1,6 @@
 ---
 name: estimate-issue
-description: This skill should be used to estimate a GitHub issue's implementation complexity and recommend the model to implement it with, before any code is written. Trigger phrases include "estimate issue #12", "how complex is this issue", "which model should implement this", "abschätzen", or whenever an issue's difficulty needs judging up front. Read-only — recommends, changes nothing. Run by the user, or by `run-milestone` for each ready issue; no other skill runs it.
+description: This skill should be used to estimate a GitHub issue's implementation complexity and recommend the model to implement it with, before any code is written. Trigger phrases include "estimate issue 12", "how complex is this issue", "which model should implement this", "abschätzen", or whenever an issue's difficulty needs judging up front. Read-only — recommends, changes nothing. Run by the user, or by `run-milestone` for each ready issue; no other skill runs it.
 ---
 
 # Estimate Issue
@@ -8,6 +8,8 @@ description: This skill should be used to estimate a GitHub issue's implementati
 Judges one issue's implementation complexity and names the model to implement it with. Read-only: no file writes, no `gh` mutations, no branch or code changes.
 
 The host's model names per tier are defined in `../_shared/runtime-adapters.md` (relative to this skill's directory); the Knowledge consultation discipline in `../_shared/conventions.md`.
+
+GitHub operations: `../_shared/github.md` — the `gh` commands below are the reference form.
 
 ## 1. Read the issue
 

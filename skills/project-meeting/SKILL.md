@@ -9,6 +9,8 @@ Moderates a recurring project status meeting — does not touch code. Decisions 
 
 Written-deliverable sizing and the delegation rule are defined in `../_shared/conventions.md` (relative to this skill's directory).
 
+GitHub operations: `../_shared/github.md` — the `gh` commands below are the reference form.
+
 ## What an issue is for
 
 A GitHub issue means implementation work: a change to code, tests, or shipped configuration. Nothing else is ever an issue.
