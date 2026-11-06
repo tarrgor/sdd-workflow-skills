@@ -1,6 +1,6 @@
 ---
 name: verify-implementation
-description: This skill should be used to review a pull request produced by implement-issue. Trigger phrases include "review this PR", "verify the implementation", "check PR #12", "review issue #12's implementation", or whenever a finished implementation needs an independent review before merge.
+description: This skill should be used to review a pull request produced by implement-issue. Trigger phrases include "review this PR", "verify the implementation", "check PR 12", "review issue 12's implementation", or whenever a finished implementation needs an independent review before merge.
 ---
 
 # Verify Implementation

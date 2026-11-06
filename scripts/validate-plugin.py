@@ -27,6 +27,8 @@ def validate(root: Path) -> list[str]:
         for line in front.splitlines():
             if line.startswith("description:") and re.search(r"<[^>]*>", line):
                 errors.append(f"{manifest.relative_to(root)}: description must not contain <...>")
+            if line.startswith("description:") and " #" in line:
+                errors.append(f"{manifest.relative_to(root)}: \" #\" starts a YAML comment and truncates the description")
     for agent in ("verify-implementation", "research-topic"):
         path = root / "agents" / f"{agent}.md"
         if not path.is_file():

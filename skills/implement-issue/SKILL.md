@@ -1,6 +1,6 @@
 ---
 name: implement-issue
-description: This skill should be used to implement a single GitHub issue from a fresh, unimplemented state. Trigger phrases include "implement issue #12", "work on this ticket", "fix issue X", "resolve this issue", or whenever the user wants the full issue-to-PR workflow. If the issue already has a branch/PR, use check-pr-comments instead.
+description: This skill should be used to implement a single GitHub issue from a fresh, unimplemented state. Trigger phrases include "implement issue 12", "work on this ticket", "fix issue X", "resolve this issue", or whenever the user wants the full issue-to-PR workflow. If the issue already has a branch/PR, use check-pr-comments instead.
 ---
 
 # Implement Issue

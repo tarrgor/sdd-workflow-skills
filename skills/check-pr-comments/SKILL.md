@@ -1,6 +1,6 @@
 ---
 name: check-pr-comments
-description: This skill should be used to triage and address review feedback on an issue that already has an open PR. Trigger phrases include "check the PR comments", "address the review feedback", "handle the comments on PR #12", "respond to review comments", or whenever an already-implemented issue has feedback waiting. Run by the user or by `run-milestone` — never triggered automatically by implement-issue, which handles its own verify-implementation findings directly. Use this for feedback already sitting on a PR from other sources (e.g. a human reviewer).
+description: This skill should be used to triage and address review feedback on an issue that already has an open PR. Trigger phrases include "check the PR comments", "address the review feedback", "handle the comments on PR 12", "respond to review comments", or whenever an already-implemented issue has feedback waiting. Run by the user or by `run-milestone` — never triggered automatically by implement-issue, which handles its own verify-implementation findings directly. Use this for feedback already sitting on a PR from other sources (e.g. a human reviewer).
 ---
 
 # Check PR Comments

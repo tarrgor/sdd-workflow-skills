@@ -1,6 +1,6 @@
 ---
 name: merge-pr
-description: This skill should be used to merge an open, reviewed pull request back into its base branch, identified by its issue number or PR number. Trigger phrases include "merge PR #12", "merge this PR", "merge issue #12", "land this branch", or whenever an approved implementation is ready to merge.
+description: This skill should be used to merge an open, reviewed pull request back into its base branch, identified by its issue number or PR number. Trigger phrases include "merge PR 12", "merge this PR", "merge issue 12", "land this branch", or whenever an approved implementation is ready to merge.
 ---
 
 # Merge PR
