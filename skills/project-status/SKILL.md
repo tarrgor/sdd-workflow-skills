@@ -43,7 +43,7 @@ Write the JSON to a temp file outside the project (or pipe it on stdin with no f
 | `project` | `name`, `repo` (`owner/name`), `base` (base branch) |
 | `milestone` | active milestone `title`, `closed`, `total`; `null` if none |
 | `planned` | titles of `Planned` specs |
-| `next` | `action` (one line), `skill`, `command` (e.g. `/implement-issue 12`); `null` if nothing is outstanding |
+| `next` | `action` (one line), `skill`, `command` (e.g. `/sdd-workflow:implement-issue 12`); `null` if nothing is outstanding |
 | `issues` | per milestone issue, by number: `number`, `title`, `state` — `closed`, else the state from `next-action.md`: `parked`, `in-progress`, `blocked`, `in-review` or `ready` — and `blocked_by` (open blocker numbers) |
 | `prs` | `number`, `title`, `branch`, `checks` (`passing`/`failing`/`pending`/`none`), `unresolved` (thread count) |
 | `findings` | `count`, `critical` (one line each) |

@@ -4,7 +4,7 @@ Use the current host's native capabilities. These mappings change invocation and
 
 ## Subagents
 
-- **Claude Code:** use the `Agent` tool with the requested `subagent_type`. Subagents run in the background and notify the caller when they finish; wait for that result before any step that depends on it, exactly as the calling skill specifies.
+- **Claude Code:** use the `Agent` tool with the requested `subagent_type`, which carries the plugin prefix (`sdd-workflow:<agent>`). Subagents run in the background and notify the caller when they finish; wait for that result before any step that depends on it, exactly as the calling skill specifies.
 - **Codex:** spawn the matching custom agent with the collaboration/subagent capability, explicitly tell it to use the corresponding `$verify-implementation` or `$research-topic` skill, pass the complete brief, and wait for its final result before continuing. The Codex custom agents are named `verify-implementation` and `research-topic` — the same names Claude Code uses; their source files live in `agents/codex/`.
 - If the named agent is unavailable, follow the fallback in the calling skill. Never claim independent review or isolated context when the work ran in the caller.
 
@@ -57,6 +57,6 @@ Determine whether the current checkout is linked by comparing `git rev-parse --g
 
 ## Skill invocation labels
 
-- Claude Code may expose skills as slash commands.
+- Claude Code exposes the plugin's skills as `/sdd-workflow:<skill>`.
 - Codex CLI and IDE support `$skill-name`; the ChatGPT desktop app exposes installed skills in its Skills UI.
 - In user-facing guidance, name the skill itself unless the host-specific invocation syntax is known.

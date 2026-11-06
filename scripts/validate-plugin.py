@@ -20,8 +20,19 @@ def validate(root: Path) -> list[str]:
         errors.append("marketplace entry name must equal plugin.json name")
     if "agents" in plugin:
         errors.append("plugin.json must not set \"agents\": the default agents/ scan is what loads them")
-    if not list((root / "agents").glob("*.md")):
-        errors.append("No Claude agent manifests in agents/")
+    for agent in ("verify-implementation", "research-topic"):
+        path = root / "agents" / f"{agent}.md"
+        if not path.is_file():
+            errors.append(f"Missing Claude agent manifest: agents/{agent}.md")
+            continue
+        front = path.read_text(encoding="utf-8").split("---", 2)[1]
+        if f"skills:\n  - {agent}\n" not in front:
+            errors.append(f"agents/{agent}.md must preload its skill: skills: [{agent}]")
+        if agent == "research-topic":
+            tools = next((l for l in front.splitlines() if l.startswith("tools:")), "")
+            local = [t for t in ("Read", "Grep", "Glob", "Bash", "Write", "Edit") if t in tools.split(":", 1)[-1].replace(",", " ").split()]
+            if local:
+                errors.append(f"agents/research-topic.md must stay web-only; remove {', '.join(local)}")
     return errors
 
 

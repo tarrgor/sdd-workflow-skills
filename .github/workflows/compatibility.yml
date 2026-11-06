@@ -21,6 +21,9 @@ jobs:
         run: python scripts/validate-run-milestone.py
       - name: Check plugin manifests
         run: python scripts/validate-plugin.py
+      - name: Validate Claude Code plugin
+        if: runner.os == 'Linux'
+        run: npx --yes @anthropic-ai/claude-code plugin validate .
       - name: Test PowerShell installer
         if: runner.os == 'Windows'
         shell: pwsh
@@ -32,4 +35,4 @@ jobs:
       - name: Lint POSIX installers
         if: runner.os == 'Linux'
         shell: bash
-        run: shellcheck install.sh install-codex.sh tests/test-install-sh.sh
+        run: shellcheck install-codex.sh tests/test-install-sh.sh

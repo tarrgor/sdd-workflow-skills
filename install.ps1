@@ -1,8 +1,5 @@
 [CmdletBinding()]
 param(
-    [ValidateSet('Codex', 'Claude', 'All')]
-    [string]$Target = 'Codex',
-
     [switch]$Force,
     [switch]$DryRun,
     [switch]$Uninstall,
@@ -15,7 +12,6 @@ $ErrorActionPreference = 'Stop'
 $repoRoot = [System.IO.Path]::GetFullPath($PSScriptRoot)
 $skillsSource = Join-Path $repoRoot 'skills'
 $codexAgentsSource = Join-Path $repoRoot 'agents\codex'
-$claudeAgentsSource = Join-Path $repoRoot 'agents'
 $installRoot = [System.IO.Path]::GetFullPath($DestinationRoot)
 $managedHeader = '# Managed by sdd-workflow-skills; local edits to installed copies may be replaced.'
 $script:linked = 0
@@ -144,49 +140,6 @@ function Install-ManagedFile {
     $script:copied++
 }
 
-function Install-FileSymbolicLink {
-    param(
-        [Parameter(Mandatory)][string]$Source,
-        [Parameter(Mandatory)][string]$Destination
-    )
-
-    if (-not (Test-UnderInstallRoot $Destination)) {
-        throw "Refusing destination outside install root: $Destination"
-    }
-    $sourceFull = [System.IO.Path]::GetFullPath($Source)
-    $existing = Get-Item -LiteralPath $Destination -Force -ErrorAction SilentlyContinue
-    if ($existing) {
-        $isReparsePoint = ($existing.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -ne 0
-        $existingTarget = if ($isReparsePoint) { Get-NormalizedTarget $existing } else { $null }
-        if ($existingTarget -and $existingTarget.Equals($sourceFull, [System.StringComparison]::OrdinalIgnoreCase)) {
-            Write-Output "ok       $Destination"
-            return
-        }
-        if (-not $isReparsePoint) {
-            Write-Warning "skip     $Destination exists and is not a link; remove it yourself"
-            $script:skipped++
-            return
-        }
-        if (-not $Force) {
-            Write-Warning "skip     $Destination points elsewhere (use -Force to replace the link)"
-            $script:skipped++
-            return
-        }
-        Write-Output "replace  $Destination"
-        if (-not $DryRun) { Remove-LinkOnly $existing }
-    }
-    Ensure-Directory (Split-Path -Parent $Destination)
-    Write-Output "link     $Destination -> $sourceFull"
-    if (-not $DryRun) {
-        try {
-            [void](New-Item -ItemType SymbolicLink -Path $Destination -Target $sourceFull)
-        } catch {
-            throw "Could not create file symlink $Destination. Enable Windows Developer Mode or run an elevated PowerShell session. $($_.Exception.Message)"
-        }
-    }
-    $script:linked++
-}
-
 function Remove-ManagedSkillJunction {
     param(
         [Parameter(Mandatory)][string]$Source,
@@ -229,42 +182,19 @@ function Remove-ManagedFile {
     $script:removed++
 }
 
-$installCodex = $Target -in @('Codex', 'All')
-$installClaude = $Target -in @('Claude', 'All')
-$skillTargets = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
-if ($installCodex) { [void]$skillTargets.Add((Join-Path $installRoot '.agents\skills')) }
-if ($installClaude) {
-    [void]$skillTargets.Add((Join-Path $installRoot '.claude\skills'))
-    [void]$skillTargets.Add((Join-Path $installRoot '.agents\skills'))
-}
-
-foreach ($targetDirectory in $skillTargets) {
-    foreach ($skillDirectory in Get-ChildItem -LiteralPath $skillsSource -Directory) {
-        $destination = Join-Path $targetDirectory $skillDirectory.Name
-        if ($Uninstall) {
-            Remove-ManagedSkillJunction -Source $skillDirectory.FullName -Destination $destination
-        } else {
-            Install-SkillJunction -Source $skillDirectory.FullName -Destination $destination
-        }
+$skillTarget = Join-Path $installRoot '.agents\skills'
+foreach ($skillDirectory in Get-ChildItem -LiteralPath $skillsSource -Directory) {
+    $destination = Join-Path $skillTarget $skillDirectory.Name
+    if ($Uninstall) {
+        Remove-ManagedSkillJunction -Source $skillDirectory.FullName -Destination $destination
+    } else {
+        Install-SkillJunction -Source $skillDirectory.FullName -Destination $destination
     }
 }
 
-if ($installCodex) {
-    foreach ($agentFile in Get-ChildItem -LiteralPath $codexAgentsSource -Filter '*.toml' -File) {
-        $destination = Join-Path (Join-Path $installRoot '.codex\agents') $agentFile.Name
-        if ($Uninstall) { Remove-ManagedFile $destination } else { Install-ManagedFile -Source $agentFile.FullName -Destination $destination }
-    }
-}
-
-if ($installClaude) {
-    foreach ($agentFile in Get-ChildItem -LiteralPath $claudeAgentsSource -Filter '*.md' -File) {
-        $destination = Join-Path (Join-Path $installRoot '.claude\agents') $agentFile.Name
-        if ($Uninstall) {
-            Remove-ManagedSkillJunction -Source $agentFile.FullName -Destination $destination
-        } else {
-            Install-FileSymbolicLink -Source $agentFile.FullName -Destination $destination
-        }
-    }
+foreach ($agentFile in Get-ChildItem -LiteralPath $codexAgentsSource -Filter '*.toml' -File) {
+    $destination = Join-Path (Join-Path $installRoot '.codex\agents') $agentFile.Name
+    if ($Uninstall) { Remove-ManagedFile $destination } else { Install-ManagedFile -Source $agentFile.FullName -Destination $destination }
 }
 
 Write-Output "linked: $script:linked  copied: $script:copied  removed: $script:removed  skipped: $script:skipped$($(if ($DryRun) { '  (dry run)' } else { '' }))"

@@ -1,6 +1,7 @@
 """Guard the tested Claude coordinator text while allowing isolated Codex routing.
 
-Baselines: main at 984bcd2269cce2f10df897c8aae4345ba1e7695d.
+Baselines: main at 984bcd2269cce2f10df897c8aae4345ba1e7695d; runtime-adapters.md
+updated for the sdd-workflow plugin's prefixed agent and skill names.
 This checks compatibility, not the runtime behavior of a prose skill.
 """
 
@@ -15,7 +16,7 @@ BASELINES = {
     "skills/run-milestone/SKILL.md":
         "0142a0420d117f7b08a7e03f44905c8684515c04d8087ce762328ae6f69f4dc4",
     "skills/_shared/runtime-adapters.md":
-        "b8c79cb244a0f3665d9ddb8fcec51b6b0dfd00bb5486e7636293d4b3834173c9",
+        "7849688cc3e0e25e7ee61f8b6c3cd29a7d9c42734059598133ed8859562517d8",
 }
 
 

@@ -10,9 +10,6 @@ function Add-ValidationError([string]$Message) {
 }
 
 $legacyHashes = @{
-    'install.sh' = 'D9A3001DDA81B4F6F2CEA308DF012E8C3CB48B1CB4DB967E58A7E9BE64EC8C53'
-    'agents/research-topic.md' = '43CEC65810C9EC014A22BAB5ECAE23DBE62DC0088EEE5172DAE4D2353946DD13'
-    'agents/verify-implementation.md' = '01B562851B61F557E74F3544D8D3319B28E8F9A484A0BC8D7E8C93490A2E6BFA'
     'AGENTS.md' = '4F675380999B9470F86A381A73B9AB7EEBB85216283B46EF2A1F26BF90D45977'
     'CLAUDE.md' = '22C73726A8E5106DD03DFF77F13E8BF063F0E236EBFF81811EDB6DD608C96988'
     'skills/kick-off/references/CLAUDE.md.template' = '3B8EF1DB55436D8B580C1BE6DAFD8BCB160383D12D8380BBB9AA455A659095C1'
@@ -35,12 +32,12 @@ foreach ($entry in $legacyHashes.GetEnumerator()) {
 }
 
 $claudeSkillContracts = @{
-    'skills/implement-issue/SKILL.md' = @('subagent_type: verify-implementation')
-    'skills/verify-implementation/SKILL.md' = @('subagent_type: verify-implementation')
-    'skills/research-topic/SKILL.md' = @('subagent_type: research-topic')
+    'skills/implement-issue/SKILL.md' = @('subagent_type: sdd-workflow:verify-implementation')
+    'skills/verify-implementation/SKILL.md' = @('subagent_type: sdd-workflow:verify-implementation')
+    'skills/research-topic/SKILL.md' = @('subagent_type: sdd-workflow:research-topic')
     'skills/run-milestone/SKILL.md' = @('mode: non-interactive', 'Units of work')
     'skills/kick-off/SKILL.md' = @('root `AGENTS.md` containing just `Read CLAUDE.md.`')
-    'skills/create-obsidian-vault/SKILL.md' = @('disable-model-invocation: true', 'run it with `/create-obsidian-vault`')
+    'skills/create-obsidian-vault/SKILL.md' = @('disable-model-invocation: true', 'run it with `/sdd-workflow:create-obsidian-vault`')
 }
 foreach ($entry in $claudeSkillContracts.GetEnumerator()) {
     $content = Get-Content -Raw -LiteralPath (Join-Path $repoRoot $entry.Key)
@@ -48,13 +45,6 @@ foreach ($entry in $claudeSkillContracts.GetEnumerator()) {
         if (-not $content.Contains($snippet)) {
             Add-ValidationError "Claude skill contract missing from $($entry.Key): $snippet"
         }
-    }
-}
-
-$installSh = Get-Content -Raw (Join-Path $repoRoot 'install.sh')
-foreach ($contract in @('$HOME/.claude/skills', '$HOME/.agents/skills', '$HOME/.claude/agents')) {
-    if (-not $installSh.Contains($contract)) {
-        Add-ValidationError "Legacy install.sh destination missing: $contract"
     }
 }
 
@@ -130,4 +120,4 @@ if ($errors.Count -gt 0) {
     exit 1
 }
 
-Write-Output "Validated $($skillNames.Count) skills, $((Get-ChildItem (Join-Path $repoRoot 'agents/codex') -Filter '*.toml').Count) Codex agents, and the unchanged Claude installation contract."
+Write-Output "Validated $($skillNames.Count) skills, $((Get-ChildItem (Join-Path $repoRoot 'agents/codex') -Filter '*.toml').Count) Codex agents, and the Claude compatibility files."
