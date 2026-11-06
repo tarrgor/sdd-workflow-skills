@@ -55,6 +55,9 @@ def validate(root: Path) -> list[str]:
     if not isinstance(interface, dict):
         errors.append("Codex plugin interface is required")
     else:
+        capabilities = interface.get("capabilities")
+        if not isinstance(capabilities, list) or not all(isinstance(item, str) for item in capabilities):
+            errors.append("Codex plugin interface.capabilities must be a list of strings")
         for field in ("displayName", "shortDescription", "longDescription", "developerName", "category"):
             value = interface.get(field)
             if not isinstance(value, str) or not value.strip():
