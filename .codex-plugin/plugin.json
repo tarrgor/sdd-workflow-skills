@@ -21,6 +21,9 @@
       "Read",
       "Write"
     ],
+    "brandColor": "#0F766E",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/logo.png",
     "websiteURL": "https://github.com/tarrgor/sdd-workflow-skills",
     "defaultPrompt": [
       "Kick off a spec-driven project.",

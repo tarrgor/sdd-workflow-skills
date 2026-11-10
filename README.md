@@ -118,7 +118,7 @@ For ZIP upload, build a Codex-only archive (do not upload GitHub's repository ZI
 python scripts/package-codex-plugin.py --output work/sdd-workflow-1.0.0.zip
 ```
 
-The archive contains `.codex-plugin/plugin.json` directly at its root, all skills and shared resources, and the license. It excludes the Claude plugin manifest.
+The archive contains `.codex-plugin/plugin.json` directly at its root, all skills and shared resources, the plugin icon (`assets/*.png`, rendered from `assets/icon.svg`), and the license. It excludes the Claude plugin manifest.
 
 Start a new task and verify skill discovery and resource access. Installation copies the plugin into Codex's cache; treat it as a snapshot, not a live link to this checkout. See [the investigation and acceptance checklist](docs/codex-plugin-investigation.md) before replacing a working manual installation. Older clients without plugin commands can keep using the installers below.
 

@@ -33,6 +33,8 @@ class PackagingTests(unittest.TestCase):
                     self.assertIn('skills/run-milestone/references/codex-desktop.md', names)
                     self.assertIn('LICENSE', names)
                     self.assertFalse(any('marketplace.json' in n or n.startswith('.git/') for n in names))
+                    assets = {n for n in names if n.startswith('assets/')}
+                    self.assertEqual(assets, {'assets/icon.png', 'assets/logo.png'} if host == 'codex' else set())
                     agents = [n for n in names if n.startswith('agents/')]
                     self.assertEqual(set(agents), {'agents/research-topic.md', 'agents/verify-implementation.md'} if host == 'claude' else set())
                 self.assertEqual((ROOT / manifest_path).read_bytes(), original)
