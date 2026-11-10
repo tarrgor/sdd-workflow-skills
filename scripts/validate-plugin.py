@@ -10,15 +10,12 @@ def validate(root: Path) -> list[str]:
     errors = []
     try:
         plugin = json.loads((root / ".claude-plugin/plugin.json").read_text(encoding="utf-8"))
-        market = json.loads((root / ".claude-plugin/marketplace.json").read_text(encoding="utf-8"))
     except (OSError, ValueError) as exc:
         return [f"Unreadable plugin manifest: {exc}"]
 
-    entries = [p for p in market.get("plugins", []) if p.get("source") == "./"]
-    if len(entries) != 1:
-        errors.append("marketplace.json needs exactly one plugin entry with source \"./\"")
-    elif entries[0].get("name") != plugin.get("name"):
-        errors.append("marketplace entry name must equal plugin.json name")
+    for stale in (".claude-plugin/marketplace.json", ".agents/plugins/marketplace.json"):
+        if (root / stale).exists():
+            errors.append(f"{stale} must not exist: the plugin is listed in the tarrgor/agent-plugins marketplace")
     if "agents" in plugin:
         errors.append("plugin.json must not set \"agents\": the default agents/ scan is what loads them")
     # claude.ai rejects plugin uploads whose descriptions contain anything tag-like.
@@ -44,7 +41,6 @@ def validate(root: Path) -> list[str]:
                 errors.append(f"agents/research-topic.md must stay web-only; remove {', '.join(local)}")
     try:
         codex = json.loads((root / ".codex-plugin/plugin.json").read_text(encoding="utf-8"))
-        codex_market = json.loads((root / ".agents/plugins/marketplace.json").read_text(encoding="utf-8"))
     except (OSError, ValueError) as exc:
         errors.append(f"Unreadable Codex plugin manifest: {exc}")
         return errors
@@ -97,11 +93,6 @@ def validate(root: Path) -> list[str]:
         errors.append("Codex plugin must load the shared ./skills directory")
     if "agents" in codex:
         errors.append("Codex plugin must not claim custom-agent registration via an agents field")
-    expected_entry = {"name": codex.get("name"), "source": {"source": "local", "path": "./"},
-                      "policy": {"installation": "AVAILABLE", "authentication": "ON_INSTALL"},
-                      "category": "Developer Tools"}
-    if codex_market.get("name") != market.get("name") or codex_market.get("plugins") != [expected_entry]:
-        errors.append("Codex marketplace must expose the repository root under the shared plugin/marketplace names")
     skills = list(root.glob("skills/*/SKILL.md"))
     if not skills:
         errors.append("Codex plugin has no bundled skills")
@@ -117,4 +108,4 @@ if __name__ == "__main__":
     if errors:
         print("\n".join(errors), file=sys.stderr)
         raise SystemExit(1)
-    print("Plugin and marketplace manifests are consistent.")
+    print("Plugin manifests are consistent.")

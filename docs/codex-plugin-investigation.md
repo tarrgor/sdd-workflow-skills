@@ -23,7 +23,7 @@ Cloud hosts may deliver skills through resource APIs rather than local paths. A 
 
 ## Acceptance before replacing a manual install
 
-1. Record client version and OS. Run `codex plugin marketplace add /absolute/path/to/checkout`, then `codex plugin add sdd-workflow@sdd-workflow-skills`. Inspect `codex plugin list --marketplace sdd-workflow-skills --json` for successful installation. Do not assume this branch is available remotely before it is pushed.
+1. Record client version and OS. Run `codex plugin marketplace add /absolute/path/to/agent-plugins` (a checkout of the `tarrgor/agent-plugins` marketplace), then `codex plugin add sdd-workflow@agent-plugins`. Inspect `codex plugin list --marketplace agent-plugins --json` for successful installation. Do not assume this branch is available remotely before it is pushed.
 2. In a new task, verify all 15 skills are discoverable once and `_shared` resources, nested references, and the status-page script are readable. Check the plugin cache contains the complete tree. Test a harmless status request against a disposable project.
 3. Remove this repository's managed manual installation using its installer uninstall option. Start another task; verify discovery again. This is the decisive check that named agents are not accidentally masking a packaging gap.
 4. On a disposable PR, invoke independent review. Confirm a fresh child handles the diff, returns findings, and does not edit or post. With collaboration unavailable, confirm review reports itself blocked instead of reviewing in the implementation context.
