@@ -74,22 +74,25 @@ Skills read and write project state here (created automatically on first use):
 
 ## Install for Claude Code
 
-The repository is a Claude Code plugin (`sdd-workflow`) and its own marketplace (`sdd-workflow-skills`). Install it once — either way below — and it works locally and in cloud sessions alike.
+The repository is a Claude Code plugin (`sdd-workflow`), published through the [`tarrgor/agent-plugins`](https://github.com/tarrgor/agent-plugins) marketplace. Install it once — either way below — and it works locally and in cloud sessions alike.
 
-**Through your claude.ai account (recommended).** In claude.ai, open **Customize → Plugins**, add the marketplace `tarrgor/sdd-workflow-skills`, and install `sdd-workflow`. Claude Code syncs account plugins at session start: into cloud sessions (claude.ai/code), and into terminal sessions signed in with your claude.ai account (Claude Code v2.1.273 or later).
+**Through your claude.ai account (recommended).** In claude.ai, open **Customize → Plugins**, add the marketplace `tarrgor/agent-plugins`, and install `sdd-workflow`. Claude Code syncs account plugins at session start: into cloud sessions (claude.ai/code), and into terminal sessions signed in with your claude.ai account (Claude Code v2.1.273 or later).
 
 **Locally only:**
 
 ```bash
-claude plugin marketplace add tarrgor/sdd-workflow-skills
-claude plugin install sdd-workflow@sdd-workflow-skills
+claude plugin marketplace add tarrgor/agent-plugins
+```
+
+```bash
+claude plugin install sdd-workflow@agent-plugins
 ```
 
 Don't do both: the local install then takes precedence and the synced copy is skipped. A cloud session never loads a plugin installed only locally, nor one declared under `enabledPlugins` / `extraKnownMarketplaces` in a project's `.claude/settings.json`.
 
-Skills and agents carry the plugin prefix: `/sdd-workflow:kick-off`, `sdd-workflow:verify-implementation`. Plain-language requests ("implement issue #12") work without it. The plugin follows the repository's commits (no pinned `version`); a local install updates with `claude plugin update sdd-workflow@sdd-workflow-skills`, or automatically once auto-update is on for the marketplace in `/plugin`.
+Skills and agents carry the plugin prefix: `/sdd-workflow:kick-off`, `sdd-workflow:verify-implementation`. Plain-language requests ("implement issue #12") work without it. The marketplace pins each release tag of this repository and stamps its version, so installs update only when a new release is synced there (see [Releases](#releases)); a local install updates with `claude plugin update sdd-workflow@agent-plugins`, or automatically once auto-update is on for the marketplace in `/plugin`.
 
-To work on the skills themselves, load your clone in place, so edits apply at the next session start: `claude plugin marketplace add /path/to/sdd-workflow-skills`, or `claude --plugin-dir /path/to/sdd-workflow-skills` for one session.
+To work on the skills themselves, load your clone for one session: `claude --plugin-dir /path/to/sdd-workflow-skills`.
 
 **Migrating from the former symlink install:** remove the old links from `~/.claude/skills` and `~/.claude/agents`, otherwise every skill is registered twice. Links in `~/.agents/skills` belong to the Codex install; remove them only if you don't use Codex.
 
@@ -99,11 +102,14 @@ To work on the skills themselves, load your clone in place, so edits apply at th
 
 This branch adds Codex plugin packaging alongside the Claude Code plugin. It reuses all 15 skills and their bundled resources; it does not run the install scripts or register custom-agent TOMLs. Independent review and research prefer existing named agents and otherwise use fresh generic subagents, with the limitations documented in `skills/_shared/runtime-adapters.md`.
 
-On a Codex CLI that supports `codex plugin` (command syntax checked with 0.167.0-alpha.4), test this checkout:
+On a Codex CLI that supports `codex plugin` (command syntax checked with 0.167.0-alpha.4), install it from a checkout of the [`tarrgor/agent-plugins`](https://github.com/tarrgor/agent-plugins) marketplace:
 
 ```bash
-codex plugin marketplace add /absolute/path/to/sdd-workflow-skills
-codex plugin add sdd-workflow@sdd-workflow-skills
+codex plugin marketplace add /absolute/path/to/agent-plugins
+```
+
+```bash
+codex plugin add sdd-workflow@agent-plugins
 ```
 
 For ZIP upload, build a Codex-only archive (do not upload GitHub's repository ZIP, which also contains the Claude plugin manifest):
@@ -112,11 +118,11 @@ For ZIP upload, build a Codex-only archive (do not upload GitHub's repository ZI
 python scripts/package-codex-plugin.py --output work/sdd-workflow-1.0.0.zip
 ```
 
-The archive contains `.codex-plugin/plugin.json` directly at its root, all skills and shared resources, and the license. It excludes the Claude plugin and marketplace manifests.
+The archive contains `.codex-plugin/plugin.json` directly at its root, all skills and shared resources, and the license. It excludes the Claude plugin manifest.
 
 Start a new task and verify skill discovery and resource access. Installation copies the plugin into Codex's cache; treat it as a snapshot, not a live link to this checkout. See [the investigation and acceptance checklist](docs/codex-plugin-investigation.md) before replacing a working manual installation. Older clients without plugin commands can keep using the installers below.
 
-After validating the plugin, use the original installer's uninstall option to remove this repository's managed manual skills and agents, then start a new task and repeat the review/research checks. Do not delete unrelated user configuration. If the plugin fails acceptance, remove it with `codex plugin remove sdd-workflow@sdd-workflow-skills` and restore the manual installation.
+After validating the plugin, use the original installer's uninstall option to remove this repository's managed manual skills and agents, then start a new task and repeat the review/research checks. Do not delete unrelated user configuration. If the plugin fails acceptance, remove it with `codex plugin remove sdd-workflow@agent-plugins` and restore the manual installation.
 
 Cloud support is **unverified**. A local plugin installation does not establish account sync or availability in cloud tasks. Each cloud host must independently expose or install the plugin, supply GitHub access, and support the capabilities a skill needs. `run-milestone` still requires its documented desktop chat tools.
 
@@ -200,7 +206,9 @@ CI validates and packages the tagged checkout, then creates a GitHub Release wit
 - `sdd-workflow-claude-1.0.0.zip`: Claude manifest, skills, shared resources, and Claude agents.
 - `sdd-workflow-codex-1.0.0.zip`: Codex manifest, skills, and shared resources.
 
-Use these assets for plugin uploads rather than GitHub's automatic source ZIP. Each archive has exactly one plugin manifest at the root. Version stamping changes archive contents only; CI does not commit version changes or move tags. The Claude marketplace checkout continues to follow repository commits.
+Use these assets for plugin uploads rather than GitHub's automatic source ZIP. Each archive has exactly one plugin manifest at the root. Version stamping changes archive contents only; CI does not commit version changes or move tags.
+
+To publish the release to the [`tarrgor/agent-plugins`](https://github.com/tarrgor/agent-plugins) marketplace, run its **Sync plugin** workflow with plugin `sdd-workflow` and the new tag.
 
 To inspect a release build locally:
 
