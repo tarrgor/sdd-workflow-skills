@@ -2,6 +2,7 @@
   "name": "sdd-workflow",
   "displayName": "SDD Workflow",
   "description": "Spec-driven development workflow: kick off a spec, break it into GitHub issues, implement, review, merge, and run project meetings.",
+  "icon": "./assets/logo.png",
   "author": {
     "name": "tarrgor"
   },

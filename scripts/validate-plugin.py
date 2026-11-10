@@ -18,6 +18,9 @@ def validate(root: Path) -> list[str]:
             errors.append(f"{stale} must not exist: the plugin is listed in the tarrgor/agent-plugins marketplace")
     if "agents" in plugin:
         errors.append("plugin.json must not set \"agents\": the default agents/ scan is what loads them")
+    icon = plugin.get("icon")
+    if icon is not None and (not isinstance(icon, str) or not icon.startswith("./") or ".." in Path(icon).parts or not (root / icon).is_file()):
+        errors.append("plugin.json icon must reference a bundled file under ./")
     # claude.ai rejects plugin uploads whose descriptions contain anything tag-like.
     for manifest in [*root.glob("skills/*/SKILL.md"), *root.glob("agents/*.md")]:
         front = manifest.read_text(encoding="utf-8").split("---", 2)[1]
