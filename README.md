@@ -203,8 +203,8 @@ The release workflow must be present in the tagged commit. Tags may use `v1.0.0`
 
 CI validates and packages the tagged checkout, then creates a GitHub Release with generated notes and these downloadable assets:
 
-- `sdd-workflow-claude-1.0.0.zip`: Claude manifest, skills, shared resources, and Claude agents.
-- `sdd-workflow-codex-1.0.0.zip`: Codex manifest, skills, and shared resources.
+- `sdd-workflow-claude-1.0.0.zip`: Claude manifest, skills, shared resources, plugin icon, and Claude agents.
+- `sdd-workflow-codex-1.0.0.zip`: Codex manifest, skills, shared resources, and plugin icon.
 
 Use these assets for plugin uploads rather than GitHub's automatic source ZIP. Each archive has exactly one plugin manifest at the root. Version stamping changes archive contents only; CI does not commit version changes or move tags.
 
