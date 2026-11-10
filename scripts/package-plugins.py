@@ -28,6 +28,8 @@ def package(host: str, destination: Path, version: str | None = None, root: Path
                  if p.is_file() and '__pycache__' not in p.parts and p.suffix != '.pyc')
     if host == 'claude':
         files.extend((root / 'agents').glob('*.md'))
+    else:
+        files.extend((root / 'assets').glob('*.png'))
     destination.parent.mkdir(parents=True, exist_ok=True)
     with ZipFile(destination, 'w', ZIP_DEFLATED) as archive:
         archive.writestr(manifest_path.as_posix(), json.dumps(manifest, indent=2) + '\n')

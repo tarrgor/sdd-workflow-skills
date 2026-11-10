@@ -15,7 +15,7 @@ class PluginValidationTests(unittest.TestCase):
     def test_upload_metadata(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            for name in ('.claude-plugin', '.codex-plugin', 'skills', 'agents'):
+            for name in ('.claude-plugin', '.codex-plugin', 'skills', 'agents', 'assets'):
                 shutil.copytree(ROOT / name, root / name)
             path = root / '.codex-plugin/plugin.json'
             original = json.loads(path.read_text())
