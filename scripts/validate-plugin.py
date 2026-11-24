@@ -99,7 +99,9 @@ def validate(root: Path) -> list[str]:
     if not skills:
         errors.append("Codex plugin has no bundled skills")
     for resource in ("skills/_shared/runtime-adapters.md", "skills/_shared/scripts/status-page.py",
-                     "skills/_shared/status-template.html", "skills/run-milestone/references/codex-desktop.md"):
+                     "skills/_shared/status-template.html", "skills/_shared/status-snapshot.md",
+                     "skills/_shared/scripts/status-snapshot.py", "skills/status-report/SKILL.md",
+                     "skills/run-milestone/references/codex-desktop.md"):
         if not (root / resource).is_file():
             errors.append(f"Missing bundled plugin resource: {resource}")
     return errors

@@ -14,7 +14,7 @@ The skill takes it from there — interviewing you one question at a time and gu
 
 - **A GitHub repo.** The workflow runs on GitHub throughout — issues, pull requests, and review comments — and has no offline fallback. Issues are grouped into a GitHub milestone per spec (created via `gh api`). If the project isn't on GitHub yet, **kick-off** and **create-spec-issues** say so and offer to create the repo for you.
 - **GitHub access.** Locally: the [GitHub CLI](https://cli.github.com) (`gh`), installed and authenticated — `brew install gh` on macOS or `winget install --id GitHub.cli` on Windows, then `gh auth login`. Without a working `gh` (e.g. in Claude Code cloud sessions, where `gh pr`/`gh issue` are refused), the skills fall back to the host's GitHub integration (MCP tools) plus `gh api` REST calls; the mapping lives in `skills/_shared/github.md`.
-- **Python 3** — only for **project-status**, which renders `STATUS.html` with a bundled script. Without it the status report still works; the page is just skipped.
+- **Python 3** — for the local status snapshot and HTML report. Other workflow operations do not require Python; a status-cache error does not invalidate an issue or PR mutation.
 - **A base branch for feature work.** `develop` is preferred — it keeps released code on `main` separate from work in progress — but it's optional: if the repo doesn't have one, the skills use its default branch (usually `main`) instead. Either way, feature branches are cut from the base branch and PRs target it.
 
 ## The workflow
@@ -31,7 +31,8 @@ project-meeting  ◄────────────  merge-pr  ◄───
         │                                              check-pr-comments
         └──────────── new issues, spec changes ◄────── (feedback → fixes)
 
-project-status — run anytime: where does the project stand, what's the next action?
+project-status — reconcile the local status and recommend what's next
+status-report  — render the saved snapshot as HTML without querying GitHub
 run-milestone  — runs implement → verify → merge for every ready issue, unattended, until a meeting is due
 ```
 
@@ -44,7 +45,8 @@ Each skill ends by naming the next step, so you always know what to run next. Fo
 5. **check-pr-comments** — triages review feedback on an already-implemented issue and fixes what's valid.
 6. **merge-pr** — merges an approved PR back into the base branch and cleans up the branch.
 7. **project-meeting** — a recurring status meeting: reviews open findings, reports on finished work, and plans what's next — always with your confirmation before anything is decided. It is also the only skill that closes a milestone — once all its issues are done, and only after you confirm.
-8. **project-status** — run anytime: reports milestone progress, open PRs, and pending findings, recommends exactly one next action, and renders the report as `STATUS.html` in the project root (from a shared template in `skills/_shared/`, so it looks the same every run; git-ignored).
+8. **project-status** — fully reconciles GitHub and project files into `.project/status.json`, gives a short summary and the next action, and refreshes `STATUS.html` for compatibility. Run it to recover a missing/stale snapshot or account for changes made outside the workflow.
+   **status-report** — renders `STATUS.html` from that snapshot or from compatible JSON passed by another skill, with no GitHub query. Workflow skills record confirmed changes in the local snapshot without a full scan; opening the current HTML report is a separate render. The snapshot and HTML are git-ignored.
 9. **migrate-project** — entry point for an existing project that doesn't follow the workflow yet: inventories its planning documents and GitHub state, migrates everything into `.project/` and a milestone, and archives the originals. Re-runnable — it migrates only what's missing.
 10. **create-obsidian-vault** — makes `.project/` browsable as an Obsidian vault: vault config plus a generated `Home.md` index of specs, knowledge, findings, and reports. **You invoke this one** whenever you want the vault created or its index refreshed. Agents never run it on their own; kick-off and migrate-project only remind you it exists.
 11. **research-topic** — standalone, **you invoke this one**: researches a topic in depth against external sources and captures the result as a durable `.project/Knowledge/` entry, so knowledge can be acquired deliberately rather than only as a byproduct of implementation. Scopes the question with you first, checks what the project already knows so it researches the gaps, and runs the sweep in subagents (`agents/research-topic.md`) — one per subtopic, in parallel — so the pages read stay out of your conversation. Entries are marked `type: research` with a date, sources, and a confidence level; anything contradicting existing knowledge goes to the Inbox for the next meeting rather than overwriting it. Useful before **kick-off** (inform the spec interview), before **implement-issue** (an unfamiliar library or protocol), or when a **project-meeting** finding turns out to be an open question rather than a decision.
