@@ -34,6 +34,7 @@ class PackagingTests(unittest.TestCase):
                     self.assertIn('skills/_shared/status-snapshot.md', names)
                     self.assertIn('skills/status-report/SKILL.md', names)
                     self.assertIn('skills/run-milestone/references/codex-desktop.md', names)
+                    self.assertIn('skills/run-milestone/references/dot-cloud.md', names)
                     self.assertIn('LICENSE', names)
                     self.assertFalse(any('marketplace.json' in n or n.startswith('.git/') for n in names))
                     assets = {n for n in names if n.startswith('assets/')}
