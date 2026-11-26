@@ -36,6 +36,7 @@ Name the recommendation and let the user act on it.
 - **Claude Code desktop app:** the session-start tool (`start_session`) with `initiation: "user_asked"`, `context: "fresh"`, `use_worktree: true`, `source_branch: <base>`, a `model` and `effort` per tier, and a brief plus `background`. The app continues the coordinator when a started session ends its turn. A session can't run on a larger model or a higher effort than the coordinator's own; a tier above it runs at the coordinator's level. Started sessions inherit the coordinator's permission mode. A follow-up goes to the same session by its id (`SendMessage`); a session is stopped with the session-stop tool.
 - **Codex desktop with chat tools:** use the Codex-only adapter in `skills/run-milestone/references/codex-desktop.md` (resolve from the installed `run-milestone` skill). It maps units to explicitly requested, user-visible chats in separate worktrees using `create_thread`, `wait_threads`, `read_thread` and `send_message_to_thread`. Read it only for a Codex `run-milestone` run; it does not change standalone skills or Claude Code sessions.
 
+- **Dot-led cloud (experimental):** the user invokes the Dot directly. The Dot coordinates workers in independent cloud checkouts using [the Dot adapter](../run-milestone/references/dot-cloud.md). A cloud worker does not coordinate or spawn peer chats. Never infer a handoff channel from the presence of a shell or subagent tool.
 - **Any other host:** unsupported — `run-milestone` says so and stops.
 
 ## Shell and filesystem

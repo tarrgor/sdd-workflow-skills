@@ -1,6 +1,6 @@
 ---
 name: run-milestone
-description: This skill should be used to work through the active milestone's ready issues unattended — implementing, reviewing and merging them in parallel sessions — until the next project meeting is due. Trigger phrases include "run the milestone", "work through the issues", "keep going until the next meeting", "continue the run", or whenever the user wants the issue loop to run without them. Claude Code desktop app and Codex desktop with chat tools; not CLI or IDE. Never creates issues, edits specs, closes milestones or resolves findings.
+description: This skill should be used to work through the active milestone's ready issues unattended — implementing, reviewing and merging them in parallel sessions — until the next project meeting is due. Trigger phrases include "run the milestone", "work through the issues", "keep going until the next meeting", "continue the run", or whenever the user wants the issue loop to run without them. Claude Code desktop, Codex desktop with chat tools, or an experimental Dot-led cloud run; a cloud worker, CLI or IDE cannot coordinate. Never creates issues, edits specs, closes milestones or resolves findings.
 ---
 
 # Run Milestone
@@ -11,11 +11,13 @@ Rules used here: `../_shared/next-action.md` (issue states, pending findings, me
 
 **Codex desktop only:** before any action, read [references/codex-desktop.md](references/codex-desktop.md). Its Codex-specific rules replace the corresponding session, permission, recovery and merge details below. Claude Code skips this reference and follows the steps below unchanged.
 
+**Dot-led cloud (experimental):** invoke from the Dot conversation, not from the cloud worker. The Dot reads [references/dot-cloud.md](references/dot-cloud.md) before action and uses it in place of desktop session, permission and recovery mechanics. If invoked in a cloud worker, give the user the Dot invocation and stop before mutating anything. Do not assume a worker-to-Dot handoff.
+
 ## 1. Preconditions
 
 - Host: only where § Units of work names a mapping. Otherwise say this skill is unsupported here and stop.
 - Active milestone per `next-action.md`; none → stop and name `project-status`.
-- Started sessions inherit this session's permission mode. If it asks before `git` or `gh` commands, sessions will wait on prompts and the run stalls — say so and let the user change it before starting.
+- Claude Code desktop sessions inherit this session's permission mode. If it asks before `git` or `gh` commands, sessions will wait on prompts and the run stalls — say so and let the user change it before starting.
 - Normal checkout on the base branch, clean apart from untracked files; `git pull --ff-only`. Otherwise stop and report.
 - Labels exist: `gh label create <name> --force` for `needs-decision`, `in-progress`, `verified`.
 

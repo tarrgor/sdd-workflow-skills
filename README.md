@@ -53,7 +53,7 @@ Each skill ends by naming the next step, so you always know what to run next. Fo
 12. **generate-branding** — standalone, on demand: produces or refreshes a brand identity guide and visual assets in `.project/Branding/`. Independent of the loop above — run it whenever you want branding created or updated.
 13. **estimate-issue** — standalone, **you invoke this one** (or `run-milestone` does, per issue): scores a single issue's implementation complexity (Low/Medium/High/Exceptional) from its acceptance criteria, the code it touches, and captured knowledge, and names the model for your host that suits that tier. Read-only, and it recommends only — no skill changes the model of the session it runs in, so switching it stays your call. Useful before **implement-issue** when you'd rather not implement a hard issue on a small model, or a trivial one on a large one.
 14. **send-to-inbox** — standalone, run from any directory: turns a short note into a self-contained finding — with the context it came from, phrased in the target project's terms — and, after you confirm the draft, writes it to `.project/Inbox/` of the project you name. Useful when work in one project surfaces a requirement for another. It never commits; the next **project-meeting** in the target triages it.
-15. **run-milestone** — **Claude Code desktop app; Codex desktop with chat tools**: works through the active milestone without you. It estimates each ready issue, starts one session per issue (in its own worktree, at most three at a time), runs **implement-issue** there in non-interactive mode, and merges the PRs whose final review left nothing high or critical open. Questions it can't answer park the issue with a `needs-decision` label and a finding. It stops once a meeting is due (a critical finding, or three pending), or when nothing is left to do, and writes a run report. Your standing permissions — parallelism, and whether it may merge into the default branch — live in `.project/RUN-POLICY.md`. Claude selects the estimated tier's model; Codex uses the user's default or an explicitly approved model table. It never creates issues, edits specs, closes milestones, or resolves findings.
+15. **run-milestone** — **Claude Code desktop app; Codex desktop with chat tools; experimental Dot-led cloud**: works through the active milestone without you. It estimates each ready issue, starts one session per issue (in its own worktree on desktop, at most three at a time; one isolated cloud checkout at a time with the experimental Dot adapter), runs **implement-issue** there in non-interactive mode, and merges the PRs whose final review left nothing high or critical open. Questions it can't answer park the issue with a `needs-decision` label and a finding. It stops once a meeting is due (a critical finding, or three pending), or when nothing is left to do, and writes a run report. Your standing permissions — parallelism, and whether it may merge into the default branch — live in `.project/RUN-POLICY.md`. Claude selects the estimated tier's model; Codex uses the user's default or an explicitly approved model table. It never creates issues, edits specs, closes milestones, or resolves findings.
 
 Conventions shared by all skills (branch naming, committing to a protected base branch, milestone commands, the spec `Status:` lifecycle, Knowledge rules) live in `skills/_shared/conventions.md`; the next-action order, issue states and the meeting-due test shared by **project-status** and **merge-pr** live in `skills/_shared/next-action.md`; host-specific mappings, including the model recommended per complexity tier, live in `skills/_shared/runtime-adapters.md`.
 
@@ -98,7 +98,7 @@ To work on the skills themselves, load your clone for one session: `claude --plu
 
 **Migrating from the former symlink install:** remove the old links from `~/.claude/skills` and `~/.claude/agents`, otherwise every skill is registered twice. Links in `~/.agents/skills` belong to the Codex install; remove them only if you don't use Codex.
 
-**In cloud sessions** the skills use the GitHub integration instead of `gh` (see Requirements). Deleting a merged PR's remote branch may be refused there (merge-pr reports it), and `run-milestone` is unsupported.
+**In cloud sessions** the skills use the GitHub integration instead of `gh` (see Requirements). Deleting a merged PR's remote branch may be refused there (merge-pr reports it). A cloud work chat cannot coordinate `run-milestone` itself. The experimental [Dot adapter](skills/run-milestone/references/dot-cloud.md) is invoked in the Dot conversation.
 
 ## Codex plugin (experimental)
 
@@ -126,7 +126,7 @@ Start a new task and verify skill discovery and resource access. Installation co
 
 After validating the plugin, use the original installer's uninstall option to remove this repository's managed manual skills and agents, then start a new task and repeat the review/research checks. Do not delete unrelated user configuration. If the plugin fails acceptance, remove it with `codex plugin remove sdd-workflow@agent-plugins` and restore the manual installation.
 
-Cloud support is **unverified**. A local plugin installation does not establish account sync or availability in cloud tasks. Each cloud host must independently expose or install the plugin, supply GitHub access, and support the capabilities a skill needs. `run-milestone` still requires its documented desktop chat tools.
+Cloud packaging and live host acceptance are separate. A local plugin installation does not establish account sync or availability in cloud tasks. Each cloud host must independently expose or install the plugin, supply GitHub access, and support the capabilities a skill needs. The experimental [Dot adapter](skills/run-milestone/references/dot-cloud.md) requires cloud task control on the Dot, not on the coding chat.
 
 ## Install for Codex on native Windows
 
@@ -164,7 +164,7 @@ This links skills into `~/.agents/skills` and copies Codex custom agents into `~
 | Independent implementation review | Claude subagent manifest | Read-only custom agent; plugin fallback uses a fresh generic subagent with behavioral restrictions |
 | Parallel topic research | Web-only Claude subagents | Read-only custom agents; plugin fallback uses generic subagents with behavioral restrictions |
 | Model recommendation per complexity tier | Sonnet / Opus / Fable | Terra / Sol / Astra |
-| Unattended milestone runs (`run-milestone`) | Desktop app only | Desktop with chat tools; live acceptance pending; CLI/IDE unsupported |
+| Unattended milestone runs (`run-milestone`) | Desktop app only | Desktop with chat tools or experimental Dot-led cloud; live acceptance pending; CLI/IDE unsupported |
 | Technical prevention of local reads by research agent | Full through the manifest tool allowlist | Not equivalent; current Codex custom-agent configuration supplies a behavioral prohibition, not a web-only tool allowlist |
 | Normal Git checkout | Full | Full |
 | Existing linked worktree / detached `HEAD` | Supported | Supported, including Codex App worktrees |
@@ -188,7 +188,7 @@ The coordinator confirms only missing policy values or authorizations and record
 
 The [Codex adapter](skills/run-milestone/references/codex-desktop.md) journals chat identities and attempts in `codex-run:` issue comments, counts feedback chats toward the same concurrency limit, and binds merge receipts to the reviewed commit. Permission prompts or uncertain chat state pause dispatch; re-invoking the skill reconciles recorded chats before starting more work. It does not promise an unattended restart after the coordinator ends, and leaves worktrees available for inspection.
 
-Complete the [Codex milestone acceptance scenarios](docs/codex-run-milestone-acceptance.md) with one worker before raising parallelism.
+Complete the [Codex desktop milestone acceptance scenarios](docs/codex-run-milestone-acceptance.md) with one worker before raising parallelism. For Dot-led runs, use the separate [cloud acceptance scenarios](docs/dot-run-milestone-acceptance.md). The experimental cloud adapter is intentionally sequential.
 
 ## Releases
 
